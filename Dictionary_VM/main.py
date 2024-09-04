@@ -26,7 +26,6 @@ def VM_Question(answer):
     else:
         print("제대로 입력")
         return False
-
 if __name__ == '__main__':
     #VM_Menu = {"1. 사이다" : 1000, "2. 콜라" : 1500, "3. 쿠키" : 2000 , "4. 레몬에이드" : 2500}
     VM_Menu = {"사이다": 1000, "콜라": 1500, "쿠키": 2000, "레몬에이드": 2500}
@@ -81,9 +80,8 @@ if __name__ == '__main__':
             curState = VM_State.CALCULATE
 
         if curState == VM_State.CALCULATE:
-            if not isAgain:
-                if VM_Wallet - selectMenuPrice < 0:
-                    print("잔액이 부족합니다. 메뉴를 다시 고르거나 금액을 투입해 주세요")
+            if isAgain or VM_Wallet - selectMenuPrice < 0:
+                print("잔액이 부족합니다. 메뉴를 다시 고르거나 금액을 투입해 주세요")
                 try:
                     answer = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
                 except ValueError:
@@ -95,9 +93,9 @@ if __name__ == '__main__':
                     continue
                 else:
                     curState = answer
-                    VM_Basket.append(selectMenu)
                     continue
-
+            VM_Wallet -= selectMenuPrice
+            VM_Basket.append(selectMenu)
             curState = VM_State.RESULT
 
         if curState == VM_State.RESULT:
@@ -105,6 +103,7 @@ if __name__ == '__main__':
                 print("ㅁㅁ구입한 목록ㅁㅁ")
                 print(", ".join(VM_Basket))
             try:
+                print(f"현재 잔액: {VM_Wallet}")
                 answer = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
             except ValueError:
                 print("제대로 입력")
@@ -114,7 +113,7 @@ if __name__ == '__main__':
                 isAgain = True
                 continue
             else:
-                curState = answer
+                curState = VM_Question(answer)
             isAgain = False
 
 print("감사합니다.")
