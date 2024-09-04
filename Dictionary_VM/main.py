@@ -26,9 +26,18 @@ def VM_Question(answer):
     else:
         print("제대로 입력")
         return False
+def menu_processing(selectMenu):
+    try:
+        if int(selectMenu) == type(int):
+            return VM_Menu_Num[selectMenu]
+    except ValueError:
+        return VM_Menu_Num[selectMenu]
+
 if __name__ == '__main__':
     #VM_Menu = {"1. 사이다" : 1000, "2. 콜라" : 1500, "3. 쿠키" : 2000 , "4. 레몬에이드" : 2500}
     VM_Menu = {"사이다": 1000, "콜라": 1500, "쿠키": 2000, "레몬에이드": 2500}
+    VM_Menu_Num =  {"1": 1000, "2": 1500, "3": 2000, "4": 2500}
+
     VM_Wallet = 0
 
     curState = VM_State.PRINTMENU
