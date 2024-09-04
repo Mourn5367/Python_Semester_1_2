@@ -7,6 +7,26 @@ class VM_State(Enum):
     SELECTMENU = 3
     CALCULATE = 4
     RESULT = 5
+class Question(Enum):
+    ADDMONEY = 1
+    AGAINMENU = 2
+    ESCAPE = 3
+def VM_Question(answer):
+    try:
+        answer = Question(answer)
+    except ValueError:
+        print("잘못된 입력")
+        return False
+    if answer == Question.ADDMONEY:
+        return VM_State.INPUTMONEY
+    elif answer == Question.AGAINMENU:
+        return VM_State.SELECTMENU
+    elif answer == Question.ESCAPE:
+        return  VM_State.STOP
+    else:
+        print("제대로 입력")
+        return False
+
 if __name__ == '__main__':
     #VM_Menu = {"1. 사이다" : 1000, "2. 콜라" : 1500, "3. 쿠키" : 2000 , "4. 레몬에이드" : 2500}
     VM_Menu = {"사이다": 1000, "콜라": 1500, "쿠키": 2000, "레몬에이드": 2500}
@@ -61,22 +81,23 @@ if __name__ == '__main__':
             curState = VM_State.CALCULATE
 
         if curState == VM_State.CALCULATE:
-            if VM_Wallet - selectMenuPrice < 0:
-                print("잔액이 부족합니다. 메뉴를 다시 고르거나 금액을 투입해 주세요")
+            if not isAgain:
+                if VM_Wallet - selectMenuPrice < 0:
+                    print("잔액이 부족합니다. 메뉴를 다시 고르거나 금액을 투입해 주세요")
                 try:
-                    addQuestion = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
+                    answer = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
                 except ValueError:
                     print("제대로 입력")
                     isAgain = True
                     continue
-                if (addQuestion == 1):
-                    curState = VM_State.INPUTMONEY
-                elif (addQuestion == 2):
-                    curState = VM_State.SELECTMENU
-                elif curState == 3:
-                    curState = VM_State.STOP
-                continue
-            VM_Basket.append(selectMenu)
+                if VM_Question(answer) == False:
+                    isAgain = True
+                    continue
+                else:
+                    curState = answer
+                    VM_Basket.append(selectMenu)
+                    continue
+
             curState = VM_State.RESULT
 
         if curState == VM_State.RESULT:
@@ -84,24 +105,19 @@ if __name__ == '__main__':
                 print("ㅁㅁ구입한 목록ㅁㅁ")
                 print(", ".join(VM_Basket))
             try:
-                addQuestion = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
+                answer = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
             except ValueError:
                 print("제대로 입력")
                 isAgain = True
                 continue
-            if (addQuestion == 1):
-                curState = VM_State.INPUTMONEY
-            elif (addQuestion == 2):
-                curState = VM_State.SELECTMENU
-            elif curState == 3:
-                curState = VM_State.STOP
-            else:
-                print("제대로 입력")
+            if not VM_Question(answer):
                 isAgain = True
                 continue
+            else:
+                curState = answer
             isAgain = False
 
-    print("감사합니다.")
+print("감사합니다.")
 
 
 
