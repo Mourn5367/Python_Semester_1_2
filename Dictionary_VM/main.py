@@ -9,7 +9,7 @@ class VM_State(Enum):
     RESULT = 5
 class Question(Enum):
     ADDMONEY = 1
-    AGAINMENU = 2
+    REORDER = 2
     ESCAPE = 3
 def VM_Question(answer):
     try:
@@ -19,7 +19,7 @@ def VM_Question(answer):
         return False
     if answer == Question.ADDMONEY:
         return VM_State.INPUTMONEY
-    elif answer == Question.AGAINMENU:
+    elif answer == Question.REORDER:
         return VM_State.SELECTMENU
     elif answer == Question.ESCAPE:
         return  VM_State.STOP
@@ -28,15 +28,16 @@ def VM_Question(answer):
         return False
 def menu_processing(selectMenu):
     try:
-        if int(selectMenu) == type(int):
+        selectMenu = int(selectMenu)
+        if isinstance(selectMenu, int):
             return VM_Menu_Num[selectMenu]
     except ValueError:
-        return VM_Menu_Num[selectMenu]
+        return VM_Menu_String[selectMenu]
 
 if __name__ == '__main__':
-    #VM_Menu = {"1. 사이다" : 1000, "2. 콜라" : 1500, "3. 쿠키" : 2000 , "4. 레몬에이드" : 2500}
-    VM_Menu = {"사이다": 1000, "콜라": 1500, "쿠키": 2000, "레몬에이드": 2500}
-    VM_Menu_Num =  {"1": 1000, "2": 1500, "3": 2000, "4": 2500}
+    VM_Menu = {"1. 사이다" : 1000, "2. 콜라" : 1500, "3. 쿠키" : 2000 , "4. 레몬에이드" : 2500}
+    VM_Menu_String = {"사이다": 1000, "콜라": 1500, "쿠키": 2000, "레몬에이드": 2500}
+    VM_Menu_Num =  {1: 1000, 2: 1500, 3: 2000, 4: 2500}
 
     VM_Wallet = 0
 
@@ -80,9 +81,9 @@ if __name__ == '__main__':
                 print(f"현재 금액: {VM_Wallet}원")
             try:
                 selectMenu = input("원하시는 메뉴를 입력해주세요. ")
-                selectMenuPrice = VM_Menu[selectMenu]
+                selectMenuPrice = menu_processing(selectMenu)
             except KeyError:
-                print("메뉴에 적힌것만 해줘.")
+                print("숫자 또는 메뉴명을 입력해 주세요")
                 isAgain = True
                 continue
             isAgain = False
