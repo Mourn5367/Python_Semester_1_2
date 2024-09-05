@@ -80,6 +80,7 @@ if __name__ == '__main__':
             if not isAgain:
                 print(f"현재 금액: {VM_Wallet}원")
             try:
+                print(", ".join(f"{menu}: {VM_Menu[menu]}" for menu in VM_Menu))
                 selectMenu = input("원하시는 메뉴를 입력해주세요. ")
                 selectMenuPrice = menu_processing(selectMenu)
             except KeyError:
@@ -102,7 +103,7 @@ if __name__ == '__main__':
                     isAgain = True
                     continue
                 else:
-                    curState = answer
+                    curState = VM_Question(answer)
                     continue
             VM_Wallet -= selectMenuPrice
             VM_Basket.append(selectMenu)
