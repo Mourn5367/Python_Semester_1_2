@@ -2,7 +2,8 @@ class Question:
     def __init__(self):
         self.Ques = ["1. 추가 금액 넣기", "2. 메뉴 다시 고르기", "3. 그만 두기"]
         self.QuesDict = self.CreateDict() # { 1 : "추가 금액 넣기"...
-        self.QuesNoneNumDict = self.CreateList() # ["추가금액넣기"...
+        self.QuesNoneNumDict = self.CreateNoneNumDict() # ["추가금액넣기"...
+        # 주의점 이거 키 넣을때 입력값에 replace() 해줘야 함
     def CreateDict(self):
         QuestionDict = {}
 
