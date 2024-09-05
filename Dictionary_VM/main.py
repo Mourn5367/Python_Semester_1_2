@@ -1,4 +1,5 @@
 from enum import Enum
+from Menu import Menu
 
 class VM_State(Enum):
     STOP = 0
@@ -30,14 +31,15 @@ def menu_processing(selectMenu):
     try:
         selectMenu = int(selectMenu)
         if isinstance(selectMenu, int):
-            return VM_Menu_Num[selectMenu]
+            return VM_Menu.num[selectMenu]
     except ValueError:
-        return VM_Menu_String[selectMenu]
+        return VM_Menu.str[selectMenu]
 
 if __name__ == '__main__':
-    VM_Menu = {"1. 사이다" : 1000, "2. 콜라" : 1500, "3. 쿠키" : 2000 , "4. 레몬에이드" : 2500}
-    VM_Menu_String = {"사이다": 1000, "콜라": 1500, "쿠키": 2000, "레몬에이드": 2500}
-    VM_Menu_Num =  {1: 1000, 2: 1500, 3: 2000, 4: 2500}
+    VM_Menu = Menu()
+    # VM_Menu = {"1. 사이다" : 1000, "2. 콜라" : 1500, "3. 쿠키" : 2000 , "4. 레몬에이드" : 2500}
+    # VM_Menu_String = {"사이다": 1000, "콜라": 1500, "쿠키": 2000, "레몬에이드": 2500}
+    # VM_Menu_Num =  {1: 1000, 2: 1500, 3: 2000, 4: 2500}
 
     VM_Wallet = 0
 
@@ -51,7 +53,7 @@ if __name__ == '__main__':
 
         if curState == VM_State.PRINTMENU:
             print("ㅁㅁ판매 목록ㅁㅁ")
-            print(", ".join(f"{menu}: {VM_Menu[menu]}" for menu in VM_Menu ))
+            print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori ))
             curState = VM_State.INPUTMONEY
             continue
 
@@ -80,7 +82,7 @@ if __name__ == '__main__':
             if not isAgain:
                 print(f"현재 금액: {VM_Wallet}원")
             try:
-                print(", ".join(f"{menu}: {VM_Menu[menu]}" for menu in VM_Menu))
+                print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori))
                 selectMenu = input("원하시는 메뉴를 입력해주세요. ")
                 selectMenuPrice = menu_processing(selectMenu)
             except KeyError:
