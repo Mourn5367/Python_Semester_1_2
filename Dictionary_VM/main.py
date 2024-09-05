@@ -124,9 +124,10 @@ if __name__ == '__main__':
                     continue
                 else:
                     curState = VM_Question(answer)
+                    isAgain = True
                     continue
             VM_Wallet -= selectMenuPrice
-            VM_Basket.append(menu_processing(selectMenu))
+            VM_Basket.append(VM_Menu.name[int(selectMenu)])
             curState = VM_State.RESULT
 
         if curState == VM_State.RESULT:
@@ -141,7 +142,6 @@ if __name__ == '__main__':
                 isAgain = True
                 continue
             if not VM_Question(answer):
-                isAgain = True
                 continue
             else:
                 curState = VM_Question(answer)
