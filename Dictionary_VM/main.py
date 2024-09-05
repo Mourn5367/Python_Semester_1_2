@@ -1,6 +1,6 @@
 from enum import Enum
 from Menu import Menu
-
+from Question import Question
 
 # 자판기의 작동 상태를 나타내는 Enum 클래스
 class VM_State(Enum):
@@ -47,17 +47,19 @@ def menu_processing(selectMenu):
 
 if __name__ == '__main__':
     VM_Menu = Menu()
-    # VM_Menu = {"1. 사이다" : 1000, "2. 콜라" : 1500, "3. 쿠키" : 2000 , "4. 레몬에이드" : 2500}
-    # VM_Menu_String = {"사이다": 1000, "콜라": 1500, "쿠키": 2000, "레몬에이드": 2500}
-    # VM_Menu_Num =  {1: 1000, 2: 1500, 3: 2000, 4: 2500}
+    # ori = {"1. 사이다": 1000, "2. 콜라": 1500, "3. 쿠키": 2000, "4. 레몬에이드": 2500}
+    # str = self.createStringDict()  # {"사이다 : 1000...
+    # num = self.createNumberDict()  # {"1: 1000...
 
+    VM_Question = Question()
+    # Ques = ["1. 추가 금액 넣기", "2. 메뉴 다시 고르기", "3. 그만 두기"]
+    # QuesDict = self.CreateDict()  # { 1 : "추가 금액 넣기"...
+    # QuesNoneNumDict = self.CreateNoneNumDict()  # ["추가금액넣기"...
     VM_Wallet = 0
-
     curState = VM_State.PRINTMENU
     isAgain = False
     selectMenuPrice = 0
     selectMenu = ""
-    addQuestion = 0
     VM_Basket = []
     while curState != 0:
 
@@ -114,7 +116,7 @@ if __name__ == '__main__':
             if isAgain or VM_Wallet - selectMenuPrice < 0:
                 print("잔액이 부족합니다. 메뉴를 다시 고르거나 금액을 투입해 주세요")
                 try:
-                    answer = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
+                    answer = int(input(VM_Question.ques))
                 except ValueError:
                     print("☆★ 제대로 입력☆★ ")
                     isAgain = True
