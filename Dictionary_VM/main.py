@@ -1,6 +1,8 @@
 from enum import Enum
 from Menu import Menu
 
+
+# 자판기의 작동 상태를 나타내는 Enum 클래스
 class VM_State(Enum):
     STOP = 0
     PRINTMENU = 1
@@ -8,13 +10,20 @@ class VM_State(Enum):
     SELECTMENU = 3
     CALCULATE = 4
     RESULT = 5
+
+# 부족한 금액을 넣거나 추가 주문, 구입 종류를 할때 매핑하는 Enum 클래스
 class Question(Enum):
     ADDMONEY = 1
     REORDER = 2
     ESCAPE = 3
+
+# 파이썬은 Enum의 숫자와 정수형의 숫자와 달라서 Question 클래스를 통해
+# 답을 받았을때 VM_State 상태로 옮기기 위한 전환 함수.
 def VM_Question(answer):
+    # 사용자의 답을 받았을때 무엇인지 확인
     try:
         answer = Question(answer)
+    # 금액, 주문, 종료 이외의 값을 넣었을 경우의 예외 처리
     except ValueError:
         print("잘못된 입력")
         return False
@@ -60,22 +69,28 @@ if __name__ == '__main__':
         if curState == VM_State.INPUTMONEY:
             if isAgain:
                 try:
-                    inputMoney = int(input("정수의 숫자만 입력해 주세요"))
-                    if inputMoney == 0:
-                        print("0원은 투입이 불가능 합니다. ")
+                    inputMoney = int(input("☆★ 0 이상의 자연수만 입력해 주세요. ☆★"))
+                    if inputMoney <= 0:
+                        print("☆★ 0원 이하는 투입이 불가능 합니다.☆★")
                         continue
                     VM_Wallet += inputMoney
                 except ValueError:
-                    isAgain = True
                     continue
 
-                isAgain = False
+                isAgain = True
+                curState = VM_State.SELECTMENU
+                continue
+
             try:
                 inputMoney = int(input("금액을 투입해 주세요. "))
+                if inputMoney >= 0:
+                    isAgain = True
+                    continue
                 VM_Wallet += inputMoney
             except ValueError:
-                print("정수의 숫자만 입력해 주세요. ")
+                isAgain = True
                 continue
+            isAgain = False
             curState = VM_State.SELECTMENU
 
         if curState == VM_State.SELECTMENU:
@@ -86,7 +101,7 @@ if __name__ == '__main__':
                 selectMenu = input("원하시는 메뉴를 입력해주세요. ")
                 selectMenuPrice = menu_processing(selectMenu)
             except KeyError:
-                print("숫자 또는 메뉴명을 입력해 주세요")
+                print("☆★ 숫자 또는 메뉴명을 입력해 주세요. ☆★")
                 isAgain = True
                 continue
             isAgain = False
@@ -98,7 +113,7 @@ if __name__ == '__main__':
                 try:
                     answer = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
                 except ValueError:
-                    print("제대로 입력")
+                    print("☆★ 제대로 입력☆★ ")
                     isAgain = True
                     continue
                 if VM_Question(answer) == False:
@@ -119,7 +134,7 @@ if __name__ == '__main__':
                 print(f"현재 잔액: {VM_Wallet}")
                 answer = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
             except ValueError:
-                print("제대로 입력")
+                print("☆★ 제대로 입력 ☆★")
                 isAgain = True
                 continue
             if not VM_Question(answer):
