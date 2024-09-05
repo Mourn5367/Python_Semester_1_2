@@ -12,7 +12,7 @@ class VM_State(Enum):
     RESULT = 5
 
 # 부족한 금액을 넣거나 추가 주문, 구입 종류를 할때 매핑하는 Enum 클래스
-class Question(Enum):
+class Select_Question(Enum):
     ADDMONEY = 1
     REORDER = 2
     ESCAPE = 3
@@ -22,20 +22,20 @@ class Question(Enum):
 def VM_Question(answer):
     # 사용자의 답을 받았을때 무엇인지 확인
     try:
-        answer = Question(answer)
+        answer = Select_Question(answer)
     # 타입이 안맞는 값이 들어올때의 예외처리 EX) String
     except ValueError:
-        print("잘못된 입력")
+        print("☆★ 선택지 안에서 고르시오 ☆★")
         return False
-    if answer == Question.ADDMONEY:
+    if answer == Select_Question.ADDMONEY:
         return VM_State.INPUTMONEY
-    elif answer == Question.REORDER:
+    elif answer == Select_Question.REORDER:
         return VM_State.SELECTMENU
-    elif answer == Question.ESCAPE:
+    elif answer == Select_Question.ESCAPE:
         return  VM_State.STOP
     else:
         # 금액, 주문, 종료 이외의 값을 넣었을 경우의 예외 처리
-        print("제대로 입력")
+        print("☆★ 숫자를 입력해 주세요. ☆★ ")
         return False
 def menu_processing(selectMenu):
     try:
@@ -141,11 +141,12 @@ if __name__ == '__main__':
                 print("☆★ 제대로 입력 ☆★")
                 isAgain = True
                 continue
-            if not VM_Question(answer):
-                continue
-            else:
+            if VM_Question(answer):
                 curState = VM_Question(answer)
-            isAgain = False
+                isAgain = True
+
+
+
 
 print("감사합니다.")
 
