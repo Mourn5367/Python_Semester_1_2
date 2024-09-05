@@ -23,7 +23,7 @@ def VM_Question(answer):
     # 사용자의 답을 받았을때 무엇인지 확인
     try:
         answer = Question(answer)
-    # 금액, 주문, 종료 이외의 값을 넣었을 경우의 예외 처리
+    # 타입이 안맞는 값이 들어올때의 예외처리 EX) String
     except ValueError:
         print("잘못된 입력")
         return False
@@ -34,6 +34,7 @@ def VM_Question(answer):
     elif answer == Question.ESCAPE:
         return  VM_State.STOP
     else:
+        # 금액, 주문, 종료 이외의 값을 넣었을 경우의 예외 처리
         print("제대로 입력")
         return False
 def menu_processing(selectMenu):
@@ -83,7 +84,7 @@ if __name__ == '__main__':
 
             try:
                 inputMoney = int(input("금액을 투입해 주세요. "))
-                if inputMoney >= 0:
+                if inputMoney <= 0:
                     isAgain = True
                     continue
                 VM_Wallet += inputMoney
@@ -94,10 +95,12 @@ if __name__ == '__main__':
             curState = VM_State.SELECTMENU
 
         if curState == VM_State.SELECTMENU:
+
             if not isAgain:
                 print(f"현재 금액: {VM_Wallet}원")
-            try:
+            else:
                 print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori))
+            try:
                 selectMenu = input("원하시는 메뉴를 입력해주세요. ")
                 selectMenuPrice = menu_processing(selectMenu)
             except KeyError:
@@ -123,7 +126,7 @@ if __name__ == '__main__':
                     curState = VM_Question(answer)
                     continue
             VM_Wallet -= selectMenuPrice
-            VM_Basket.append(selectMenu)
+            VM_Basket.append(menu_processing(selectMenu))
             curState = VM_State.RESULT
 
         if curState == VM_State.RESULT:
