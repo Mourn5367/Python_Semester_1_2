@@ -177,6 +177,7 @@ if __name__ == '__main__':
                 print(f"현재 잔액: {VM_Wallet}")
                 answer = (input(", ".join(f"{item}" for item in VM_Question.list)))
                 answer = int(answer)
+
             except ValueError:
                 try:
                     answer = VM_Question.quesReversDict[answer.replace(" ","")]
@@ -184,9 +185,14 @@ if __name__ == '__main__':
                     print("☆★ 정확히 입력해 주세요. ☆★")
                     isAgain = True
                     continue
+            
+            # 부적절한 답을 할 경우 돌아오고 선택지 안에 있는 답을 할경우 그쪽으로 점프
             if convertAnswer(answer):
                 curState = convertAnswer(answer)
                 isAgain = False
+            else:
+                isAgain = True
+                continue
 
         if curState == VM_State.STOP:
             if not VM_Basket:
