@@ -99,6 +99,7 @@ if __name__ == '__main__':
             try:
                 inputMoney = int(input("금액을 투입해 주세요. "))
                 if inputMoney <= 0:
+                    print("☆★ 0원 이하는 투입이 불가능 합니다. ☆★")
                     isAgain = True
                     continue
                 VM_Wallet += inputMoney
