@@ -42,6 +42,8 @@ def convertAnswer(answer):
         # 금액, 주문, 종료 이외의 값을 넣었을 경우의 예외 처리
         print("☆★ 숫자를 입력해 주세요. ☆★")
         return False
+
+# 숫자와 글자 두개 다 입력받기위한 처리과정
 def menu_processing(selectMenu):
     try:
         selectMenu = int(selectMenu)
@@ -214,8 +216,8 @@ if __name__ == '__main__':
                 print(f"거스름돈은 {VM_Wallet}원입니다.")
             # 반복문 탈출
             break
+    print("이용해 주셔서 감사합니다.")
 
-print("이용해 주셔서 감사합니다.")
 
 
 
