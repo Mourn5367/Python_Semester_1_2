@@ -19,7 +19,7 @@ class Select_Question(Enum):
 
 # 파이썬은 Enum의 숫자와 정수형의 숫자와 달라서 Question 클래스를 통해
 # 답을 받았을때 VM_State 상태로 옮기기 위한 전환 함수.
-def VM_Question(answer):
+def convertAnswer(answer):
     # 사용자의 답을 받았을때 무엇인지 확인
     try:
         answer = Select_Question(answer)
@@ -61,10 +61,11 @@ if __name__ == '__main__':
     selectMenuPrice = 0
     selectMenu = ""
     VM_Basket = []
-    while curState != 0:
+    print(f"구동 시작")
+    while True:
 
         if curState == VM_State.PRINTMENU:
-            print("ㅁㅁ판매 목록ㅁㅁ")
+            print("==판매 목록==")
             print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori ))
             curState = VM_State.INPUTMONEY
             continue
@@ -97,13 +98,10 @@ if __name__ == '__main__':
             curState = VM_State.SELECTMENU
 
         if curState == VM_State.SELECTMENU:
-
-            if not isAgain:
-                print(f"현재 금액: {VM_Wallet}원")
-            else:
-                print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori))
+            print(f"현재 금액: {VM_Wallet}원")
+            print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori))
             try:
-                selectMenu = input("원하시는 메뉴를 입력해주세요. ")
+                selectMenu = input("원하시는 메뉴를 입력해주세요. ").replace(" ", "")
                 selectMenuPrice = menu_processing(selectMenu)
             except KeyError:
                 print("☆★ 숫자 또는 메뉴명을 입력해 주세요. ☆★")
@@ -114,39 +112,59 @@ if __name__ == '__main__':
 
         if curState == VM_State.CALCULATE:
             if isAgain or VM_Wallet - selectMenuPrice < 0:
-                print("잔액이 부족합니다. 메뉴를 다시 고르거나 금액을 투입해 주세요")
+                if VM_Wallet - selectMenuPrice < 0:
+                    print("잔액이 부족합니다.")
+                elif isAgain:
+                    print("메뉴를 다시 고르거나 금액을 투입해 주세요")
                 try:
-                    answer = int(input(VM_Question.ques))
+                    answer = (input(", ".join(f"{item}"for item in VM_Question.list)))
+                    answer = int(answer)
                 except ValueError:
-                    print("☆★ 제대로 입력☆★ ")
-                    isAgain = True
-                    continue
-                if VM_Question(answer) == False:
+                    try:
+                        answer = VM_Question.quesReversDict[answer.replace(" ","")]
+                    except KeyError:
+                        print("☆★ 정확히 입력해 주세요☆★")
+                        isAgain = True
+                        continue
+
+                if convertAnswer(answer) == False:
                     isAgain = True
                     continue
                 else:
-                    curState = VM_Question(answer)
-                    isAgain = True
+                    curState = convertAnswer(answer)
+                    isAgain = False
                     continue
             VM_Wallet -= selectMenuPrice
-            VM_Basket.append(VM_Menu.name[int(selectMenu)])
+            try:
+                VM_Basket.append(VM_Menu.name[int(selectMenu)])
+            except ValueError:
+                selectMenu = selectMenu.replace(" ", "")
+                VM_Basket.append(VM_Menu.noneNumDict[selectMenu])
             curState = VM_State.RESULT
 
         if curState == VM_State.RESULT:
             if not isAgain:
-                print("ㅁㅁ구입한 목록ㅁㅁ")
+                print("==구입한 목록==")
                 print(", ".join(VM_Basket))
             try:
                 print(f"현재 잔액: {VM_Wallet}")
-                answer = int(input("1. 추가 금액 넣기 2. 메뉴 다시 고르기 3. 그만 두기"))
+                answer = int(input(", ".join(f"{item}"for item in VM_Question.list)))
             except ValueError:
-                print("☆★ 제대로 입력 ☆★")
+                print("☆★ 정확히 입력해 주세요☆★")
                 isAgain = True
                 continue
-            if VM_Question(answer):
-                curState = VM_Question(answer)
-                isAgain = True
+            if convertAnswer(answer):
+                curState = convertAnswer(answer)
 
+        if curState == VM_State.STOP:
+            if not VM_Basket:
+                print("오늘 구입하신 물품은 없습니다.")
+                print(f"투입 했던 금액 {VM_Wallet}원 돌려드리겠습니다.")
+            else:
+                print("==오늘 구입한 목록==")
+                print(", ".join(VM_Basket))
+                print(f"거스름돈은 {VM_Wallet}원입니다.")
+            break
 
 
 
