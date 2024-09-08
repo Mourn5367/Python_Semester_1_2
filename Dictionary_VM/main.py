@@ -138,6 +138,7 @@ if __name__ == '__main__':
         if curState == VM_State.CALCULATE:
             if isAgain or VM_Wallet - selectMenuPrice < 0:
                 if VM_Wallet - selectMenuPrice < 0:
+
                     #숫자로 받을 경우 "1" 이렇게 입력 받기 때문에 처리.
                     try:
                         print(f"{VM_Menu.name[int(selectMenu)]}을(를) 사기에는 잔액이 부족합니다.")
@@ -156,12 +157,14 @@ if __name__ == '__main__':
                         answer = VM_Question.quesReversDict[answer.replace(" ","")]
                     except KeyError:
                         print("☆★ 정확히 입력해 주세요☆★")
+                        selectMenuPrice = 0
                         isAgain = True
                         continue
                 
                 # 해결방안에 대해 잘못된 값 입력시 다시 해당 단계 반복
                 if convertAnswer(answer) == False:
                     isAgain = True
+                    selectMenuPrice = 0
                     continue
                 # 정확히 입력 하였다면 그 단계로 점프
                 else:
