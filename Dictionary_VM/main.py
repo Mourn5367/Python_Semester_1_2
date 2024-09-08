@@ -126,12 +126,27 @@ if __name__ == '__main__':
             print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori))
             try:
                 selectMenu = input("원하시는 메뉴를 입력해주세요. ").replace(" ", "")
+
                 if int(selectMenu) == 0:
                     curState = VM_State.RESULT
                     continue
-                selectMenuPrice = menu_processing(selectMenu)
-            except (KeyError, ValueError):
-
+                selectMenuPrice = menu_processing(int(selectMenu))
+            # 문자로 적으면 ValueError가 발생한다. 하지만 문자도 받아야 하기 때문에
+            # 다시한번 try를 사용해 검사한다.
+            except ValueError:
+                try:
+                    # 만약 menu_processing을 통해 쓸데없는 문자인 경우
+                    # KeyError가 발생하여 밑의 코드가 실행 되지 않는다.
+                    selectMenuPrice = menu_processing(selectMenu)
+                    isAgain = False
+                    curState = VM_State.CALCULATE
+                    continue
+                except KeyError:
+                    print("☆★ 숫자 또는 메뉴명을 입력해 주세요. ☆★")
+                    isAgain = True
+                    continue
+            # 메뉴 숫자 이외의 것이 들어오면 KeyError가 발생하기 때문에 예외 처리
+            except KeyError:
                 print("☆★ 숫자 또는 메뉴명을 입력해 주세요. ☆★")
                 isAgain = True
                 continue
