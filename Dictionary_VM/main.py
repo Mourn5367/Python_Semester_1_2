@@ -84,9 +84,13 @@ if __name__ == '__main__':
         if curState == VM_State.INPUTMONEY:
             if isAgain:
                 try:
-                    inputMoney = int(input("☆★ 0 이상의 자연수만 입력해 주세요. ☆★"))
-                    if inputMoney <= 0:
+                    inputMoney = int(input("☆★ 0 이상의 자연수만 입력해 주세요. 취소는 0입니다.☆★"))
+                    if inputMoney < 0:
                         print("☆★ 0원 이하는 투입이 불가능 합니다. ☆★")
+                        continue
+                    elif inputMoney == 0:
+                        curState = VM_State.RESULT
+                        isAgain = False
                         continue
                     VM_Wallet += inputMoney
                 except ValueError:
@@ -98,9 +102,12 @@ if __name__ == '__main__':
 
             try:
                 inputMoney = int(input("금액을 투입해 주세요. "))
-                if inputMoney <= 0:
+                if inputMoney < 0:
                     print("☆★ 0원 이하는 투입이 불가능 합니다. ☆★")
                     isAgain = True
+                    continue
+                elif inputMoney == 0:
+                    curState = VM_State.RESULT
                     continue
                 VM_Wallet += inputMoney
             except ValueError:
@@ -176,8 +183,9 @@ if __name__ == '__main__':
         # 계산까지 다 마쳤다면 구입한 목록들 출력, 추가 구매 유무 확인.
         if curState == VM_State.RESULT:
             if not isAgain:
-                print("==구입한 목록==")
-                print(", ".join(VM_Basket))
+                if VM_Basket:
+                    print("==구입한 목록==")
+                    print(", ".join(VM_Basket))
             try:
                 print(f"현재 잔액: {VM_Wallet}")
                 answer = (input(", ".join(f"{item}" for item in VM_Question.list)))
