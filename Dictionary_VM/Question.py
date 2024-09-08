@@ -12,7 +12,7 @@ class Question:
             dict_Key, dict_Value = int(item.split(".")[0]), item.split(".")[1].strip()
             QuestionDict[dict_Key] = dict_Value
         return QuestionDict
-
+    # 안써서 주석처리함.
     # def CreateNoneNumDict(self):
     #     QuestionNoneNumList = {}
     #     # key와 Value 둘다 얻기 위해서는 딕셔너리.items()를 해줘야하고
