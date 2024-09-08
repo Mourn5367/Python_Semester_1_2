@@ -50,11 +50,14 @@ if __name__ == '__main__':
     # ori = {"1. 사이다": 1000, "2. 콜라": 1500, "3. 쿠키": 2000, "4. 레몬에이드": 2500}
     # str = self.createStringDict()  # {"사이다 : 1000...
     # num = self.createNumberDict()  # {"1: 1000...
+    # name = self.extractMenu()  # { "","사이다"...
+    # noneNumDict = self.CreateNoneNumDict()  # {"사이다" : "사이다"
 
     VM_Question = Question()
-    # Ques = ["1. 추가 금액 넣기", "2. 메뉴 다시 고르기", "3. 그만 두기"]
-    # QuesDict = self.CreateDict()  # { 1 : "추가 금액 넣기"...
-    # QuesNoneNumDict = self.CreateNoneNumDict()  # ["추가금액넣기"...
+    # list = ["1. 추가 금액 넣기", "2. 메뉴 다시 고르기", "3. 그만 두기"]
+    # quesDict = self.CreateDict()  # { 1 : "추가 금액 넣기"...
+    # quesNoneNumDict = self.CreateNoneNumDict()  # ["추가금액넣기"...
+    # quesReversDict = self.CreateReversDict()  # ["추가금액넣기" : 1...
     VM_Wallet = 0
     curState = VM_State.PRINTMENU
     isAgain = False
@@ -64,12 +67,15 @@ if __name__ == '__main__':
     print(f"구동 시작")
     while True:
 
+        # 판매목록 출력과 금액 투입으로 넘어감.
         if curState == VM_State.PRINTMENU:
             print("==판매 목록==")
             print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori ))
             curState = VM_State.INPUTMONEY
             continue
 
+        # 금액을 투입하는 단계, 투입시 메뉴 선택으로 넘어감.
+        # isAgain 변수를 통해 재입력시 경고문 출력.
         if curState == VM_State.INPUTMONEY:
             if isAgain:
                 try:
@@ -94,9 +100,12 @@ if __name__ == '__main__':
             except ValueError:
                 isAgain = True
                 continue
+
             isAgain = False
             curState = VM_State.SELECTMENU
 
+        # 현재 금액 및 메뉴 출력
+        # 한글 또는 숫자 입력시 계산 단계로 넘어감.
         if curState == VM_State.SELECTMENU:
             print(f"현재 금액: {VM_Wallet}원")
             print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori))
@@ -110,12 +119,22 @@ if __name__ == '__main__':
             isAgain = False
             curState = VM_State.CALCULATE
 
+        # 메뉴를 잘 선택하였다면 계산 단계로 넘어오게 됨 정상적으로 계산 완료했을시 결과 단계로 넘어감.
+        # 투입한 금액과 선택한 메뉴 계산과 금액이 적어 실패 했을 때 다른 솔루션을 제공함.
+        # 이때의 답 또한 한글로 입력 가능.
         if curState == VM_State.CALCULATE:
             if isAgain or VM_Wallet - selectMenuPrice < 0:
                 if VM_Wallet - selectMenuPrice < 0:
-                    print("잔액이 부족합니다.")
+                    #숫자로 받을 경우 "1" 이렇게 입력 받기 때문에 처리.
+                    try:
+                        print(f"{VM_Menu.name[int(selectMenu)]}을(를) 사기에는 잔액이 부족합니다.")
+                    #글자로 받을 경우 그대로 나오기 때문에(SELECTMENU 상태에서 replace 처리한 상태) 그대로 출력
+                    except ValueError:
+                        print(f"{selectMenu}을(를) 사기에는 잔액이 부족합니다.")
                 elif isAgain:
                     print("메뉴를 다시 고르거나 금액을 투입해 주세요")
+
+                # 보유 금액 부족시 해결 방안 출력.
                 try:
                     answer = (input(", ".join(f"{item}"for item in VM_Question.list)))
                     answer = int(answer)
@@ -126,15 +145,21 @@ if __name__ == '__main__':
                         print("☆★ 정확히 입력해 주세요☆★")
                         isAgain = True
                         continue
-
+                
+                # 해결방안에 대해 잘못된 값 입력시 다시 해당 단계 반복
                 if convertAnswer(answer) == False:
                     isAgain = True
                     continue
+                # 정확히 입력 하였다면 그 단계로 점프
                 else:
                     curState = convertAnswer(answer)
                     isAgain = False
                     continue
+            # 메뉴값과 투입한 금액이 더 많거나 같을시 금액 차감.
+            # 그 외 다른 단계로 넘어가거나 잘못 입력시 해당 단계 반복 및 점프.
             VM_Wallet -= selectMenuPrice
+
+            # 한글, 숫자 둘 다 입력받기 위한 전환 과정.
             try:
                 VM_Basket.append(VM_Menu.name[int(selectMenu)])
             except ValueError:
@@ -142,6 +167,7 @@ if __name__ == '__main__':
                 VM_Basket.append(VM_Menu.noneNumDict[selectMenu])
             curState = VM_State.RESULT
 
+        # 계산까지 다 마쳤다면 구입한 목록들 출력, 추가 구매 유무 확인.
         if curState == VM_State.RESULT:
             if not isAgain:
                 print("==구입한 목록==")
@@ -164,11 +190,10 @@ if __name__ == '__main__':
                 print("==오늘 구입한 목록==")
                 print(", ".join(VM_Basket))
                 print(f"거스름돈은 {VM_Wallet}원입니다.")
+            # 반복문 탈출
             break
 
-
-
-print("감사합니다.")
+print("이용해 주셔서 감사합니다.")
 
 
 
