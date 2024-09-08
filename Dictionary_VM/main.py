@@ -126,8 +126,12 @@ if __name__ == '__main__':
             print(", ".join(f"{menu}: {VM_Menu.ori[menu]}" for menu in VM_Menu.ori))
             try:
                 selectMenu = input("원하시는 메뉴를 입력해주세요. ").replace(" ", "")
+                if int(selectMenu) == 0:
+                    curState = VM_State.RESULT
+                    continue
                 selectMenuPrice = menu_processing(selectMenu)
-            except KeyError:
+            except (KeyError, ValueError):
+
                 print("☆★ 숫자 또는 메뉴명을 입력해 주세요. ☆★")
                 isAgain = True
                 continue
