@@ -154,31 +154,9 @@ if __name__ == '__main__':
                 elif isAgain:
                     print("메뉴를 다시 고르거나 금액을 투입해 주세요")
 
-                # 보유 금액 부족시 해결 방안 출력.
-                try:
-                    answer = (input(", ".join(f"{item}"for item in VM_Question.list)))
-                    answer = int(answer)
-                except ValueError:
-                    try:
-                        answer = VM_Question.quesReversDict[answer.replace(" ","")]
-                    except KeyError:
-                        print("☆★ 정확히 입력해 주세요☆★")
-                        selectMenuPrice = 0
-                        isAgain = True
-                        continue
-                
-                # 해결방안에 대해 잘못된 값 입력시 다시 해당 단계 반복
-                if convertAnswer(answer) == False:
-                    isAgain = True
-                    selectMenuPrice = 0
-                    continue
-                # 정확히 입력 하였다면 그 단계로 점프
-                else:
-                    curState = convertAnswer(answer)
-                    isAgain = False
-                    continue
-            # 메뉴값과 투입한 금액이 더 많거나 같을시 금액 차감.
-            # 그 외 다른 단계로 넘어가거나 잘못 입력시 해당 단계 반복 및 점프.
+                # 보유 금액 부족시 해결 방안 출력 => RESULT 상태.
+                curState = VM_State.RESULT
+                continue
             VM_Wallet -= selectMenuPrice
 
             # 한글, 숫자 둘 다 입력받기 위한 전환 과정.
