@@ -30,7 +30,7 @@ def convertAnswer(answer):
         answer = Select_Question(answer)
     # 타입이 안맞는 값이 들어올때의 예외처리 EX) String
     except ValueError:
-        print("☆★ 선택지 안에서 고르시오 ☆★")
+        print("☆★ 선택지 안에서 고르시오. ☆★")
         return False
     if answer == Select_Question.ADDMONEY:
         return VM_State.INPUTMONEY
@@ -40,7 +40,7 @@ def convertAnswer(answer):
         return  VM_State.STOP
     else:
         # 금액, 주문, 종료 이외의 값을 넣었을 경우의 예외 처리
-        print("☆★ 숫자를 입력해 주세요. ☆★ ")
+        print("☆★ 숫자를 입력해 주세요. ☆★")
         return False
 def menu_processing(selectMenu):
     try:
@@ -86,7 +86,7 @@ if __name__ == '__main__':
                 try:
                     inputMoney = int(input("☆★ 0 이상의 자연수만 입력해 주세요. ☆★"))
                     if inputMoney <= 0:
-                        print("☆★ 0원 이하는 투입이 불가능 합니다.☆★")
+                        print("☆★ 0원 이하는 투입이 불가능 합니다. ☆★")
                         continue
                     VM_Wallet += inputMoney
                 except ValueError:
@@ -179,13 +179,18 @@ if __name__ == '__main__':
                 print(", ".join(VM_Basket))
             try:
                 print(f"현재 잔액: {VM_Wallet}")
-                answer = int(input(", ".join(f"{item}"for item in VM_Question.list)))
+                answer = (input(", ".join(f"{item}" for item in VM_Question.list)))
+                answer = int(answer)
             except ValueError:
-                print("☆★ 정확히 입력해 주세요☆★")
-                isAgain = True
-                continue
+                try:
+                    answer = VM_Question.quesReversDict[answer.replace(" ","")]
+                except KeyError:
+                    print("☆★ 정확히 입력해 주세요. ☆★")
+                    isAgain = True
+                    continue
             if convertAnswer(answer):
                 curState = convertAnswer(answer)
+                isAgain = False
 
         if curState == VM_State.STOP:
             if not VM_Basket:
