@@ -4,19 +4,26 @@ import sys
 
 from Group import Group
 
-def superpeople(superlist : list, gr: Group) -> list:
-    reply = input("선택권 있나요 (있는 경우 ""네 입력"") ")
+def setseatcount(gr: Group):
+    try:
+        gr.cols_count()
+        gr.rows_count()
+    except ValueError:
+        print("유효 하지 않는 입력입니다.")
+        sys.exit()
 
+def superpeople(superlist : list, gr: Group):
+    reply = input("선택권 있나요 (있는 경우 ""네 입력"") ")
 
     if reply.replace(" ","") == "네":
         try:
             count = int(input("몇자리 까지 선택 하겠습니까? (숫자로 입력)"))
         except ValueError:
             print("숫자 이외의 입력입니다. 좌석 선택 함수를 종료합니다.")
-            return superlist
+            return
         if count > gr.totalSeat:
             print("현재 좌석보다 많습니다. 좌석 선택 함수를 종료합니다.")
-            return superlist
+            return
         for i in range(count):
             name = input(f"{i + 1}번째 사람의 이름은?")
             superList[0].append(name)
@@ -26,42 +33,42 @@ def superpeople(superlist : list, gr: Group) -> list:
             except ValueError:
                 print("숫자 이외의 입력입니다. 좌석 선택 함수를 종료합니다.")
         superList[1].sort()
-    return superlist
+    return
 
-if __name__ == '__main__':
+def setname(namelist : list, gr: Group)-> list:
 
-    step = 0
-    gr = Group()
+    issetname = input("이름을 작성하시겠습니까? (할 경우 ""네""를 입력해 주세요.")
 
-    try:
-        gr.cols_count()
-        gr.rows_count()
-    except ValueError:
-        print("유효 하지 않는 입력입니다.")
-        sys.exit()
+    if issetname.replace(" ","") == "네":
+        tmpname = input("이름을 띄어 쓰기로 구분하여 입력해 주세요. 다 적으셨다면 엔터를 눌러주세요.").split(" ")
+        namelist.clear()
+        namelist.extend(tmpname)
 
-    superList = [[],[]]
-    print(len(superList[0]))
-    superList = superpeople(superList,gr)
-    # reply = input("선택권 있나요")
-    # if reply == "네":
-    #     count = int(input("몇자리 까지?"))
-    #     for i in range(count):
-    #         name = str(input(f"{i+1}번째 사람의 이름은?"))
-    #         superList[0].append(name)
-    #         position = int(input(f"{name}의 자리는?"))
-    #         superList[1].append(position)
-    #     superList[1].sort()
 
-    # nameList = input("이름을 입력하세요.(띄어 쓰기로 구분)").split(" ")
-    nameList = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"] # 학생 이름 적기
-    if len(nameList) < gr.totalSeat:
+    if len(namelist) > gr.totalSeat:
         for i in range(gr.totalSeat - (len(nameList) + len(superList[0]))):
             nameList.append(f"EMPTY")
 
     if len(nameList) > gr.totalSeat:
         print("좌석 수 보다 인원 수 가 더 많습니다. 프로그램을 종료합니다.")
         sys.exit()
+
+
+
+if __name__ == '__main__':
+
+    step = 0
+    gr = Group()
+
+    setseatcount(gr)
+
+    superList = [[],[]]
+    superpeople(superList,gr)
+
+    # 학생 이름 적기
+    nameList = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+
+    setname(nameList, gr)
 
     copyNameList = copy.deepcopy(nameList)
     seatL = []
