@@ -2,7 +2,10 @@ class Group:
     def __init__(self):
         self.rows = 0
         self.cols = 0
-        self.totalSeat = self.rows  * self.cols
+
+    @property
+    def totalSeat(self):
+        return self.rows * self.cols
 
     def rows_count(self):
         self.rows = int(input("가로행의 갯수를 적으시오.:"))
