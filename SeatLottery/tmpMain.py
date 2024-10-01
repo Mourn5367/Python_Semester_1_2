@@ -45,7 +45,7 @@ def setname(namelist : list, gr: Group)-> list:
         namelist.extend(tmpname)
 
 
-    if len(namelist) > gr.totalSeat:
+    if len(namelist) < gr.totalSeat:
         for i in range(gr.totalSeat - (len(nameList) + len(superList[0]))):
             nameList.append(f"EMPTY")
 
