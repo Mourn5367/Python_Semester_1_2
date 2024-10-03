@@ -4,6 +4,7 @@ import sys
 
 from Group import Group
 
+
 def setseatcount(gr: Group):
     try:
         gr.cols_count()
@@ -11,6 +12,12 @@ def setseatcount(gr: Group):
     except ValueError:
         print("유효 하지 않는 입력입니다.")
         sys.exit()
+
+def supermark(superlist : list)-> list:
+
+    for i in range(len(superlist[0])):
+        superlist[0][i] = superlist[0][i] + "-지정"
+    return superlist
 
 def superpeople(superlist : list, gr: Group)-> list:
     reply = input("선택권 있나요 (있는 경우 ""네 입력"") ")
@@ -45,6 +52,7 @@ def superpeople(superlist : list, gr: Group)-> list:
                 print("숫자 이외의 입력입니다. 좌석 선택 함수를 종료합니다.")
                 superlist.clear()
                 return superlist
+        supermark(superlist)
         superList[1].sort()
     return superlist
 
@@ -57,7 +65,7 @@ def setname(namelist : list, superlist : list, gr: Group):
         namelist.clear()
         namelist.extend(tmpname)
 
-
+    print(len(namelist), len(superlist[1]), gr.totalSeat)
     if len(namelist) + len(superlist[1]) < gr.totalSeat:
         for i in range(gr.totalSeat - (len(nameList) + len(superList[0]))):
             nameList.append(f"EMPTY")
@@ -66,11 +74,43 @@ def setname(namelist : list, superlist : list, gr: Group):
         print("좌석 수 보다 인원 수 가 더 많습니다. 프로그램을 종료합니다.")
         sys.exit()
 
+
+
 def duplicatename(duplist : list)-> list:
 
     for i in duplist:
-        if duplist.count(i) > 1:
+        dupcount = 0
+        dupversion = 1
 
+        if duplist.count(i) > 1:
+            for j, k in enumerate(duplist):
+                if k == i and dupcount == 0:
+                    dupcount += 1
+                    continue
+                elif k == i and dupcount != 0:
+                    duplist[j] = duplist[j]+("-"+str(dupversion))
+                    dupversion += 1
+
+    return duplist
+
+def makeseat(gr : Group, copynamelist : list, superlist : list)-> list:
+    seatlist = []
+    for i in range(gr.rows):
+        seatlist.append({})
+        for j in range(gr.cols):
+            random.shuffle(copynamelist)
+            if len(superlist[1]) >= 1 and (j+i*gr.cols+1) == superlist[1][0]:
+                seatlist[i][j+i*gr.cols+1] = superlist[0].pop(0)
+                superlist[1].pop(0)
+            else:
+                seatlist[i][j+i*gr.cols+1] = copynamelist.pop()
+    return seatlist
+
+def printseat(gr : Group, seatlist : list):
+    for i in range(gr.rows):
+        for j in range(gr.cols, 0, -1):  # (1,gr.cols+1)
+            print(f"{i * gr.cols + j:02}번 {seatlist[i][j + i * gr.cols]:<3}\t", end="")
+        print("\n")
 
 if __name__ == '__main__':
 
@@ -81,27 +121,26 @@ if __name__ == '__main__':
 
     superList = [[],[]]
     superList = superpeople(superList,gr)
-
+    superList[0] = duplicatename(superList[0])
     # 학생 이름 적기
     nameList = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
     setname(nameList,superList, gr)
-
+    nameList = duplicatename(nameList)
     copyNameList = copy.deepcopy(nameList)
-    seatL = []
-
-    for i in range(gr.rows):
-        seatL.append({})
-        for j in range(gr.cols):
-            random.shuffle(copyNameList)
-            if len(superList[1]) >= 1 and (j+i*gr.cols+1) == superList[1][0]:
-                seatL[i][j+i*gr.cols+1] = superList[0].pop(0)
-                superList[1].pop(0)
-            else:
-                seatL[i][j+i*gr.cols+1] = copyNameList.pop()
-
-    for i in range(gr.rows):
-        for j in range(gr.cols, 0, -1): # (1,gr.cols+1)
-            print(f"{i*gr.cols+j:02}번 {seatL[i][j+i*gr.cols]:<3}\t",end="")
-        print("\n")
+    seatList = makeseat(gr, copyNameList, superList)
+    # for i in range(gr.rows):
+    #     seatL.append({})
+    #     for j in range(gr.cols):
+    #         random.shuffle(copyNameList)
+    #         if len(superList[1]) >= 1 and (j+i*gr.cols+1) == superList[1][0]:
+    #             seatL[i][j+i*gr.cols+1] = superList[0].pop(0)
+    #             superList[1].pop(0)
+    #         else:
+    #             seatL[i][j+i*gr.cols+1] = copyNameList.pop()
+    printseat(gr, seatList)
+    # for i in range(gr.rows):
+    #     for j in range(gr.cols, 0, -1): # (1,gr.cols+1)
+    #         print(f"{i*gr.cols+j:02}번 {seatList[i][j+i*gr.cols]:<3}\t",end="")
+    #     print("\n")
 
