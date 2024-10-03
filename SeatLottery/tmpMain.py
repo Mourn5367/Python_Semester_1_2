@@ -74,8 +74,6 @@ def setname(namelist : list, superlist : list, gr: Group):
         print("좌석 수 보다 인원 수 가 더 많습니다. 프로그램을 종료합니다.")
         sys.exit()
 
-
-
 def duplicatename(duplist : list)-> list:
 
     for i in duplist:
@@ -113,34 +111,30 @@ def printseat(gr : Group, seatlist : list):
         print("\n")
 
 if __name__ == '__main__':
-
-    step = 0
+    
+    # 자리 수 관련 클래스 생성
     gr = Group()
-
+    
+    # 자리수 생성.
+    # 세로 몇줄 가로 몇줄
     setseatcount(gr)
 
+
     superList = [[],[]]
+
+    # 지정석 생성 여부 확인 및 생성
     superList = superpeople(superList,gr)
+    # 지정석 이름중 같은 이름 중복 표시
     superList[0] = duplicatename(superList[0])
-    # 학생 이름 적기
+
+    # 학생 이름
     nameList = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
-
+    # 학생 이름 기존것 사용 여부 입력시 띄어쓰기로 구분
     setname(nameList,superList, gr)
-    nameList = duplicatename(nameList)
-    copyNameList = copy.deepcopy(nameList)
-    seatList = makeseat(gr, copyNameList, superList)
-    # for i in range(gr.rows):
-    #     seatL.append({})
-    #     for j in range(gr.cols):
-    #         random.shuffle(copyNameList)
-    #         if len(superList[1]) >= 1 and (j+i*gr.cols+1) == superList[1][0]:
-    #             seatL[i][j+i*gr.cols+1] = superList[0].pop(0)
-    #             superList[1].pop(0)
-    #         else:
-    #             seatL[i][j+i*gr.cols+1] = copyNameList.pop()
-    printseat(gr, seatList)
-    # for i in range(gr.rows):
-    #     for j in range(gr.cols, 0, -1): # (1,gr.cols+1)
-    #         print(f"{i*gr.cols+j:02}번 {seatList[i][j+i*gr.cols]:<3}\t",end="")
-    #     print("\n")
 
+    # 학생 이름중 중복 표시
+    nameList = duplicatename(nameList)
+
+    seatList = makeseat(gr, nameList, superList)
+
+    printseat(gr, seatList)
