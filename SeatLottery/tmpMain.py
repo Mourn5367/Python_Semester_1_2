@@ -20,7 +20,7 @@ def supermark(superlist : list)-> list:
     return superlist
 
 # 지정 좌석 여부 확인 후 이름과 자리 위치 정하기
-def superpeople(superlist : dict, gr: Group)-> dict:
+def superpeople(superlist : list, gr: Group)-> list:
     reply = input("선택권 있나요 (있는 경우 ""네 입력"") ")
     if reply.replace(" ","") == "네":
         try:
@@ -35,7 +35,7 @@ def superpeople(superlist : dict, gr: Group)-> dict:
         for i in range(count):
             name = input(f"{i + 1}번째 사람의 이름은?")
             # 0번째는 이름 1번째는 자리 위치
-            #superlist[0].append(name)
+            superlist[0].append(name)
             try:
                 # 처음 추가 했을 때와 아닐 때 질문이 조금 달라짐.
                 if superlist[1]:
@@ -62,10 +62,7 @@ def superpeople(superlist : dict, gr: Group)-> dict:
                 return superlist
         # 이름 뒤에 "이름-지정" 이렇게 표시
         supermark(superlist)
-        #
-        #superList[1].sort()
     return superlist
-
 def setname(namelist : list, superlist : list, gr: Group):
 
     issetname = input("이름을 작성하시겠습니까? (할 경우 ""네""를 입력해 주세요.")
@@ -74,13 +71,14 @@ def setname(namelist : list, superlist : list, gr: Group):
         tmpname = input("이름을 띄어 쓰기로 구분하여 입력해 주세요.(마지막은 X) 다 적으셨다면 엔터를 눌러주세요.").split(" ")
         namelist.clear()
         namelist.extend(tmpname)
-
-    print(len(namelist), len(superlist[1]), gr.totalSeat)
-    if len(namelist) + len(superlist[1]) < gr.totalSeat:
+    else:
+        print("기존 이름으로 진행합니다.")
+    print(len(namelist), len(superlist[0]), gr.totalSeat)
+    if len(namelist) + len(superlist[0]) < gr.totalSeat:
         for i in range(gr.totalSeat - (len(nameList) + len(superList[0]))):
             nameList.append(f"EMPTY")
 
-    if len(nameList) + len(superlist[1]) > gr.totalSeat:
+    if len(nameList) + len(superlist[0]) > gr.totalSeat:
         print("좌석 수 보다 인원 수 가 더 많습니다. 프로그램을 종료합니다.")
         sys.exit()
 
@@ -101,15 +99,21 @@ def duplicatename(duplist : list)-> list:
 
     return duplist
 
-def makeseat(gr : Group, copynamelist : list, superlist : list)-> list:
+def listtodict(superlist: list)-> dict:
+    tmpdict = {}
+    for i in range(len(superlist[0])):
+        tmpdict[superlist[1][i]] = superlist[0][i]
+    return tmpdict
+
+def makeseat(gr : Group, copynamelist : list, superlist : dict)-> list:
     seatlist = []
+    superlistkey = list(superlist.keys())
     for i in range(gr.rows):
         seatlist.append({})
         for j in range(gr.cols):
             random.shuffle(copynamelist)
-            if len(superlist[1]) >= 1 and (j+i*gr.cols+1) == superlist[1][0]:
-                seatlist[i][j+i*gr.cols+1] = superlist[0].pop(0)
-                superlist[1].pop(0)
+            if (j+i*gr.cols+1) in superlistkey:
+                seatlist[i][j+i*gr.cols+1] = superlist[j+i*gr.cols+1]
             else:
                 seatlist[i][j+i*gr.cols+1] = copynamelist.pop()
     return seatlist
@@ -130,8 +134,7 @@ if __name__ == '__main__':
     setseatcount(gr)
 
 
-    #superList = [[],[]]
-    superList = {}
+    superList = [[],[]]
     # 지정석 생성 여부 확인 및 생성
     superList = superpeople(superList,gr)
     # 지정석 이름중 같은 이름 중복 표시
@@ -145,6 +148,8 @@ if __name__ == '__main__':
     # 학생 이름중 중복 표시
     nameList = duplicatename(nameList)
 
+    #리스트에서 딕셔너리로 변환
+    superList = listtodict(superList)
     # seatList에 학생들 자리 생성
     seatList = makeseat(gr, nameList, superList)
 
