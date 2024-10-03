@@ -1,8 +1,8 @@
 import random
 import sys
+from time import sleep
 
 from Group import Group
-
 
 # 좌석 수 설정
 def setseatcount(gr: Group):
@@ -63,65 +63,95 @@ def superpeople(superlist : list, gr: Group)-> list:
         # 이름 뒤에 "이름-지정" 이렇게 표시
         supermark(superlist)
     return superlist
+
+# 지정석 외 이름 정하기.
 def setname(namelist : list, superlist : list, gr: Group):
 
     issetname = input("이름을 작성하시겠습니까? (할 경우 ""네""를 입력해 주세요.")
 
     if issetname.replace(" ","") == "네":
         tmpname = input("이름을 띄어 쓰기로 구분하여 입력해 주세요.(마지막은 X) 다 적으셨다면 엔터를 눌러주세요.").split(" ")
+        # 기존거 없애고 입력한것 추가하기.
         namelist.clear()
         namelist.extend(tmpname)
     else:
         print("기존 이름으로 진행합니다.")
-    print(len(namelist), len(superlist[0]), gr.totalSeat)
+    
+    # 기입한 이름 또는 기존 코드의 이름수 + 지정석 인원 < 전체 좌석수인 경우
+    # 빈자리라고 표시하기 위해서 이름 리스트에 추가
     if len(namelist) + len(superlist[0]) < gr.totalSeat:
+        # 빈 인원수 만큼 추가
         for i in range(gr.totalSeat - (len(nameList) + len(superList[0]))):
             nameList.append(f"EMPTY")
-
+        
+    # 자리가 부족 할 경우
     if len(nameList) + len(superlist[0]) > gr.totalSeat:
         print("좌석 수 보다 인원 수 가 더 많습니다. 프로그램을 종료합니다.")
         sys.exit()
 
+# 중복 이름 표시하기
 def duplicatename(duplist : list)-> list:
 
     for i in duplist:
+        # 중복 횟수
         dupcount = 0
-        dupversion = 1
-
+        
         if duplist.count(i) > 1:
+            # 인덱스와 값을 받음.
             for j, k in enumerate(duplist):
+                # 중복된 값이 지금 k값이랑 같고 첫번째인 경우와 아닌 경우
                 if k == i and dupcount == 0:
                     dupcount += 1
                     continue
                 elif k == i and dupcount != 0:
-                    duplist[j] = duplist[j]+("-"+str(dupversion))
-                    dupversion += 1
-
+                    # 첫번째가 아닌 경우에는 해당 인덱스의 값을 수정
+                    duplist[j] = duplist[j]+("-"+str(dupcount))
+                    dupcount += 1
     return duplist
 
+# superlist를 dict 형태로 변경
 def listtodict(superlist: list)-> dict:
+    # 임시 dict
     tmpdict = {}
+    # 키와 값을 딕셔너리 형태로 변경
     for i in range(len(superlist[0])):
         tmpdict[superlist[1][i]] = superlist[0][i]
     return tmpdict
 
-def makeseat(gr : Group, copynamelist : list, superlist : dict)-> list:
+# 기존 이름리스트와 지정석 이름 딕셔너리 두개를 합쳐서 좌석 리스트를 만듦.
+def makeseat(gr : Group, namelist : list, superlist : dict)-> list:
     seatlist = []
+    # 키 값을 리스트로 만듦.
     superlistkey = list(superlist.keys())
     for i in range(gr.rows):
         seatlist.append({})
         for j in range(gr.cols):
-            random.shuffle(copynamelist)
+            # 무작위로 뽑기위해 random 모듈을 가져와서 리스트 셔플
+            random.shuffle(namelist)
+            # 지정석 키 값에 좌석 번호가 있음. 지금 추첨하는 자리 값이 지정석인지 확인
             if (j+i*gr.cols+1) in superlistkey:
                 seatlist[i][j+i*gr.cols+1] = superlist[j+i*gr.cols+1]
             else:
-                seatlist[i][j+i*gr.cols+1] = copynamelist.pop()
+                seatlist[i][j+i*gr.cols+1] = namelist.pop()
     return seatlist
 
+# 지정석과 무작위 자리를 합친 리스트를 가져와서 출력하기
 def printseat(gr : Group, seatlist : list):
+    
     for i in range(gr.rows):
+        # 왼쪽부터 1번인 경우  (1,gr.cols+1) 오른쪽이 1번인 경우 (gr.cols, 0, -1)
         for j in range(gr.cols, 0, -1):  # (1,gr.cols+1)
-            print(f"{i * gr.cols + j:02}번 {seatlist[i][j + i * gr.cols]:<3}\t", end="")
+            # :02 이건 한자리 숫자일 경우 01로 표시
+            # <3 이건 정렬 방향과 전체 길이를 몇으로 조정할 것인지
+            # end="" 자리 하나만 출력하고 줄 바꾸지 않을려고
+            print(f"{i * gr.cols + j:02}번 {seatlist[i][j + i * gr.cols]:<8}\t\t", end="")
+            sleep(0.4)
+        # 밑의 경우는 좌석 밑에 이름 나오게 출력 하는 경우
+        #     print(f"{i * gr.cols + j:02}번 \t\t", end="")
+        # print("")
+        # for k in range(gr.cols, 0, -1):
+        #     print(f"{seatlist[i][k + i * gr.cols]:<8}\t",end="")
+        #     sleep(0.2)
         print("\n")
 
 if __name__ == '__main__':
@@ -132,8 +162,6 @@ if __name__ == '__main__':
     # 자리수 생성.
     # 세로 몇줄 가로 몇줄
     setseatcount(gr)
-
-
     superList = [[],[]]
     # 지정석 생성 여부 확인 및 생성
     superList = superpeople(superList,gr)
@@ -141,7 +169,7 @@ if __name__ == '__main__':
     superList[0] = duplicatename(superList[0])
 
     # 학생 이름
-    nameList = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+    nameList = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","A","B"]
     # 학생 이름 기존것 사용 여부 입력시 띄어쓰기로 구분
     setname(nameList,superList, gr)
 
