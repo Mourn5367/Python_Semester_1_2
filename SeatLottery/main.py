@@ -1,8 +1,20 @@
+# 2024_10_06_파이썬_기초_실습_과제
+# 한국폴리텍대학_서울정수캠퍼스_인공지능소프트웨어과
+# 2401110252_박지수
+# 자리 추첨기 만들기
+
 import random
 import sys
 from time import sleep
 
 from Group import Group
+
+def longnamecut(namelist: list)->list:
+    for i, name in enumerate(namelist):
+        if len(name) > 5:
+            namelist[i] = name[:5]
+    return namelist
+
 
 # 좌석 수 설정
 def setseatcount(gr: Group):
@@ -16,7 +28,7 @@ def setseatcount(gr: Group):
 def supermark(superlist : list)-> list:
     # 리스트 길이만큼 반복해서 이름 부분에 문자열 추가로 붙이기.
     for i in range(len(superlist[0])):
-        superlist[0][i] = superlist[0][i] + "-지정"
+        superlist[0][i] = superlist[0][i] + "-지"
     return superlist
 
 # 지정 좌석 여부 확인 후 이름과 자리 위치 정하기
@@ -25,6 +37,9 @@ def superpeople(superlist : list, gr: Group)-> list:
     if reply.replace(" ","") == "네":
         try:
             count = int(input("몇자리 까지 선택 하겠습니까? (숫자로 입력)"))
+            if count <= 0:
+                print("1보다 작은 수를 입력하여 좌석 선택 함수를 종료합니다.")
+                return superlist
         except ValueError:
             print("숫자 이외의 입력입니다. 좌석 선택 함수를 종료합니다.")
             return superlist
@@ -56,7 +71,7 @@ def superpeople(superlist : list, gr: Group)-> list:
                     return superlist
                 # 정상적인 경우 자리도 리스트 첫번째에 추가
                 superlist[1].append(position)
-            except ValueError:
+            except (ValueError):
                 print("숫자 이외의 입력입니다. 좌석 선택 함수를 종료합니다.")
                 superlist.clear()
                 return superlist
@@ -67,7 +82,7 @@ def superpeople(superlist : list, gr: Group)-> list:
 # 지정석 외 이름 정하기.
 def setname(namelist : list, superlist : list, gr: Group):
 
-    issetname = input("이름을 작성하시겠습니까? (할 경우 ""네""를 입력해 주세요.")
+    issetname = input("이름을 작성하시겠습니까? (할 경우 ""네""를 입력해 주세요.)")
 
     if issetname.replace(" ","") == "네":
         tmpname = input("이름을 띄어 쓰기로 구분하여 입력해 주세요.(마지막은 X) 다 적으셨다면 엔터를 눌러주세요.").split(" ")
@@ -142,20 +157,20 @@ def printseat(gr : Group, seatlist : list):
         # 왼쪽부터 1번인 경우  (1,gr.cols+1) 오른쪽이 1번인 경우 (gr.cols, 0, -1)
         for j in range(gr.cols, 0, -1):  # (1,gr.cols+1)
             # :02 이건 한자리 숫자일 경우 01로 표시
-            # <3 이건 정렬 방향과 전체 길이를 몇으로 조정할 것인지
+            # <3,ljust() 이건 정렬 방향과 전체 길이를 몇으로 조정할 것인지
             # end="" 자리 하나만 출력하고 줄 바꾸지 않을려고
-            print(f"{i * gr.cols + j:02}번 {seatlist[i][j + i * gr.cols]:<8}\t\t", end="")
-            sleep(0.4)
-        # 밑의 경우는 좌석 밑에 이름 나오게 출력 하는 경우
-        #     print(f"{i * gr.cols + j:02}번 \t\t", end="")
-        # print("")
-        # for k in range(gr.cols, 0, -1):
-        #     print(f"{seatlist[i][k + i * gr.cols]:<8}\t",end="")
-        #     sleep(0.2)
+            # print(f"{i * gr.cols + j:02}번 {seatlist[i][j + i * gr.cols]:<11}", end="\t")
+            # sleep(0.2)
+        # # 밑의 경우는 좌석 밑에 이름 나오게 출력 하는 경우
+            print(f"{i * gr.cols + j:02}번".ljust(9), end="\t")
+        print("")
+        for k in range(gr.cols, 0, -1):
+            print(f"{seatlist[i][k + i * gr.cols]}".ljust(8),end="\t")
+            sleep(0.2)
         print("\n")
 
 if __name__ == '__main__':
-    
+    print()
     # 자리 수 관련 클래스 생성
     gr = Group()
     
@@ -166,13 +181,15 @@ if __name__ == '__main__':
     # 지정석 생성 여부 확인 및 생성
     superList = superpeople(superList,gr)
     # 지정석 이름중 같은 이름 중복 표시
-    superList[0] = duplicatename(superList[0])
-
+    if len(superList) > 1:
+        superList[0] = duplicatename(superList[0])
+    else:
+        superList = [[],[]]
     # 학생 이름
-    nameList = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","A","B"]
+    nameList = ["AA","BB","CC","DD","EE","FF","GG","HH","II","JJ","KK","LL","MM","NN","OO","PP","QQ","RR","SS","TT","UU","VV","WW","XX","YY","ZZ","AA","BB"]
     # 학생 이름 기존것 사용 여부 입력시 띄어쓰기로 구분
     setname(nameList,superList, gr)
-
+    longnamecut(nameList)
     # 학생 이름중 중복 표시
     nameList = duplicatename(nameList)
 
