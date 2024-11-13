@@ -8,12 +8,10 @@ class VendingMachine:
         self.insertMoney = 0
 
 
-    def SelectMenuOrAdmin(self, menu:Menu)->Beverage:
-        menu.ShowMenuList(menu.menuDict)
-        tmpMenuList = []
-        for k ,v in menu.menuDict.items():
-            if v.getCount() != 0:
-                tmpMenuList.append(k)
+
+    def SelectMenuOrEnterAdminMode(self, menu:Menu)->Beverage:
+        menu.ShowMenuList(menu.NotSoldOutMenu())
+        tmpMenuList = list(menu.NotSoldOutMenu().items())
 
         userSelect = ""
 
@@ -25,8 +23,10 @@ class VendingMachine:
                 menu.CallAdmin()
 
             else:
-                if userSelect in menu.menuDict.keys():
-                    return menu.menuDict[userSelect]
+                if userSelect in menu.NotSoldOutMenu().keys():
+                    return menu.NotSoldOutMenu()[userSelect]
+                elif not userSelect.isdigit():
+                    print("잘못된 입력입니다")
                 elif int(userSelect):
                     if 1 <= int(userSelect) <= len(tmpMenuList):
                         return tmpMenuList[int(userSelect) - 1][1]

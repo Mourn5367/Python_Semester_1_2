@@ -7,7 +7,7 @@ if __name__ == '__main__':
     VM =  VendingMachine()
     #menu.setBeverage()\
     while True:
-        ㅁㄴㅇ =  VM.SelectMenuOrAdmin(menu)
+       ㅁㄴㅇ= VM.SelectMenuOrEnterAdminMode(menu)
 
     # menu.addBeverage("콜라")
     # menu.addBeverage(1)
