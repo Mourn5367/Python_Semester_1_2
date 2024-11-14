@@ -5,24 +5,30 @@ class Beverage:
         self.__count = count
         self.__salesCount = 0
 
-    def changePrice(self, price):
+    def ChangePrice(self, price):
         self.__price = price
 
-    def changeCount(self, count):
+    def ChangeCount(self, count):
         self.__count = count
 
-    def changeName(self, name):
+    def InsertCount(self, count):
+        self.__count += count
+
+    def ExtractCount(self, count):
+        self.__count -= count
+
+    def ChangeName(self, name):
         self.__name = name
 
-    def getName(self):
+    def GetName(self):
         return self.__name
 
-    def getPrice(self):
+    def GetPrice(self):
         return self.__price
 
-    def getCount(self):
+    def GetCount(self):
         return self.__count
 
-    def getSales(self, count = 1):
+    def GetSales(self, count = 1):
         self.__count -= count
         self.__salesCount += count

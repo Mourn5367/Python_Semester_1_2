@@ -40,7 +40,7 @@ class VendingMachine:
 
 
     def CheckChoiceAndMoney(self, userSelect:Beverage,count:int)->bool:
-        if self.insertMoney <= userSelect.getPrice() * count:
+        if self.insertMoney <= userSelect.GetPrice() * count:
             return False
         else:
             return True
@@ -49,10 +49,10 @@ class VendingMachine:
         tmpCount = input("구입할 개수를 기입하여 주십시오.:")
 
         if tmpCount.isdigit():
-            if userSelect.getCount() >= int(tmpCount):
+            if userSelect.GetCount() >= int(tmpCount):
                 return int(tmpCount)
             else:
-                print(f'재고가 {int(tmpCount) - userSelect.getCount()} 만큼 부족합니다.')
+                print(f'재고가 {int(tmpCount) - userSelect.GetCount()} 만큼 부족합니다.')
                 return False
         else:
             print("잘못된 입력입니다.")

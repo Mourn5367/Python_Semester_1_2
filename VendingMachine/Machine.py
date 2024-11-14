@@ -12,13 +12,13 @@ class Machine:
     def showMenu(self):
         i = 0
         for k,v in self.menuList.items():
-            print(f'{i}번: {v.getName()}\t',end="")
+            print(f'{i}번: {v.GetName()}\t', end="")
             i += 1
         print()
 
     def showStock(self):
         for k,v in self.menuList.items():
-            print(f'{k} 재고: {v.getCount()}개\t',end="")
+            print(f'{k} 재고: {v.GetCount()}개\t', end="")
         print()
 
     def inputMoney(self,inputMoney: int):
