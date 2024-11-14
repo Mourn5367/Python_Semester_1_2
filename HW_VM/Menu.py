@@ -31,7 +31,20 @@ class Menu:
     #             print("그런 음료수는 없습니다.")
     #     else:
     #         print("그런 음료수는 없습니다.")
-    
+
+    def AnalyzeSales(self):
+        totalSalesPrice = 0
+        totalSalesCount = 0
+        i = 0
+        for k, v in self.menuDict.items():
+            print(f'{i}. {v.GetName()} 판매 개수: {v.GetSales()}, 판매 금액: {v.GetSales()*v.GetPrice()}')
+            totalSalesPrice += v.GetSales()*v.GetPrice()
+            totalSalesCount += v.GetSales()
+
+        print("------------------------------------------")
+        print(f'총 판매 개수는 {totalSalesCount}이며 금액은 {totalSalesPrice}원 입니다.')
+
+
     # 재고 충전
     def RestockBeverage(self):
         # 선택 지문 출력
