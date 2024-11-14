@@ -57,7 +57,8 @@ class Menu:
             
             # 1. 콜라 판매대 재고: N개 보유 재고 :N개... 출력한 뒤 무슨 음료수의 재고를 넣을 것인지 입력받음
             name = input("재고를 채워 넣을 음료수 이름을 기입하시오.")
-            
+
+
             # 만약 입력 받은것이 양수로 입력 받았다면
             if name.isdigit():
                 # 딕셔너리의 리스트 형태를 리스트로 변환함
@@ -67,45 +68,64 @@ class Menu:
                 if int(name) <= len(tmpList):
                     # 리스트를 통해서 어떤 음료수인지 특정한 다음 이름(key)을 가져와서 판매대의 무슨 음료인지 가져옴
                     tmpBeverage = self.menuDict[tmpList[int(name)-1][0]]
+                    if tmpBeverage.GetName() not in self.haveBeverage.keys():
+                        print(f'등록된 음료수 중 {tmpBeverage.GetName()}는 없어 음료 재고 충전을 종료합니다.')
+                        return
                     # 음료수의 이름, 재고 수를 출력하여 몇개 넣을것인지 입력받음
                     print(f'{tmpBeverage.GetName()}를 몇개 채워넣겠습니까?\n현재({tmpBeverage.GetCount()}개)', end="")
                     # 판매대에는 있고 등록되지 않은 음료수일수도 있음.
                     if tmpBeverage.GetName() in self.haveBeverage:
-                        count = input(f', 보유({tmpBeverage.GetCount}): ')
+                        count = input(f', 보유({self.haveBeverage[tmpBeverage.GetName()].GetCount()}): ')
                     else:
                         count = input(": ")
+
                     # 입력받은 재고 충전 개수가 숫자인지 확인
+
                     if count.isdigit():
                         # 충전 개수만큼 보유재고가 있는지 확인
-                        if self.menuDict[tmpBeverage.GetName()].GetCount() <= self.haveBeverage[tmpBeverage.GetName()].GetCount():
+                        if int(count) <= self.haveBeverage[tmpBeverage.GetName()].GetCount():
                             # 만약 충전 개수만큼 보유재고가 있다면 그만큼 해당 음료수에 재고 수를 추가함.
                             self.menuDict[tmpBeverage.GetName()].InsertCount(int(count))
                             # 추가한 재고 수 만큼 보유재고는 그만큼 차감함.
                             self.haveBeverage[tmpBeverage.GetName()].ExtractCount(int(count))
+                            print(f'충전되어 판매대에는 {self.menuDict[tmpBeverage.GetName()].GetCount()}개 되었고'
+                                  f' 보유 재고는 {self.haveBeverage[tmpBeverage.GetName()].GetCount()}개 되었습니다. ')
                         else:
                         # 보유재고가 충전 개수보다 작다면 알림을 주고 종료
-                            print(f'{self.haveBeverage[tmpBeverage].GetName()}의 보유 재고({self.haveBeverage[tmpBeverage].GetCount()})가'
+                            print(f'{self.haveBeverage[tmpBeverage.GetName()].GetName()}의 보유 재고({self.haveBeverage[tmpBeverage.GetName()].GetCount()})가'
                                   f' 입력한 {count}보다 적어 재고 충전을 종료합니다.')
                     # 숫자가 아니라면 종료
                     else:
                         print("숫자 또는 양수의 값이 입력 되지 않아 재고 충전을 종료합니다.")
+                else:
+                    print("잘못된 입력입니다. 재고 충전을 종료합니다.")
 
             # 입력받은 값이 key값이라면
             elif name in self.menuDict.keys():
+
                 # 입력받은 음료수 지정
                 tmpBeverage = self.menuDict[name]
+                
+                # 해당 음료가 등록되지 않은 음료수라면 종료
+                if tmpBeverage.GetName() not in self.haveBeverage.keys():
+                    print(f'등록된 음료수 중 {tmpBeverage.GetName()}는 없어 음료 재고 충전을 종료합니다.')
+                    return
+
+                # 맻개 채워 넣을지
                 print(f'{tmpBeverage.GetName()}를 몇개 채워넣겠습니까?\n현재({tmpBeverage.GetCount()}개)', end="")
                 if tmpBeverage.GetName() in self.haveBeverage:
-                    count = input(f', 보유({tmpBeverage.GetCount}): ')
+                    count = input(f', 보유({self.haveBeverage[tmpBeverage.GetName()].GetCount()}): ')
                 else:
                     count = input(": ")
+
                 if count.isdigit():
-                    if self.menuDict[tmpBeverage.GetName()].GetCount() <= self.haveBeverage[
-                        tmpBeverage.GetName()].GetCount():
+                    if int(count) <= self.haveBeverage[tmpBeverage.GetName()].GetCount():
                         self.menuDict[tmpBeverage.GetName()].InsertCount(int(count))
                         self.haveBeverage[tmpBeverage.GetName()].ExtractCount(int(count))
+                        print(f'충전되어 판매대에는 {self.menuDict[tmpBeverage.GetName()].GetCount()}개 되었고'
+                              f' 보유 재고는 {self.haveBeverage[tmpBeverage.GetName()].GetCount()}개 되었습니다. ')
                     else:
-                        print(f'{self.haveBeverage[tmpBeverage].GetName()}의 보유 재고({self.haveBeverage[tmpBeverage].GetCount()})가'
+                        print(f'{self.haveBeverage[tmpBeverage.GetName()].GetName()}의 보유 재고({self.haveBeverage[tmpBeverage.GetName()].GetCount()})가'
                               f' 입력한 {count}보다 적어 재고 충전을 종료합니다.')
                 else:
                     print("숫자 또는 양수의 값이 입력 되지 않아 재고 충전을 종료합니다.")
@@ -133,7 +153,8 @@ class Menu:
                     count = input(f'{tmpBeverage.GetName()}를 몇개 발주하시겠습니까?\n현재({tmpBeverage.GetCount()}개): ')
                     # 입력값이 양수라면 그만큼 충전함
                     if count.isdigit():
-                        self.haveBeverage[tmpList[int(name)][0]].InsertCount(int(count))
+                        self.haveBeverage[tmpBeverage.GetName()].InsertCount(int(count))
+                        print(f'보유 재고가 {self.haveBeverage[tmpBeverage.GetName()].GetCount()}개 되었습니다.')
                     else:
                         print("숫자 또는 양수의 값이 입력 되지 않아 재고 충전을 종료합니다.")
             
@@ -144,6 +165,7 @@ class Menu:
                 count = input(f'{tmpBeverage.GetName()}를 몇개 발주하시겠습니까?\n현재({tmpBeverage.GetCount()}개): ')
                 if count.isdigit():
                     self.haveBeverage[name].InsertCount(int(count))
+                    print(f'보유 재고가 {self.haveBeverage[name].GetCount()}개 되었습니다.')
                 else:
                     print("숫자 또는 양수의 값이 입력 되지 않아 재고 충전을 종료합니다.")
             # 매뉴 수보다 큰 수이거나 key값이 아닌 글자일 경우
