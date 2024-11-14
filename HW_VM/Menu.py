@@ -32,7 +32,7 @@ class Menu:
     #     else:
     #         print("그런 음료수는 없습니다.")
 
-    def AnalyzeSales(self):
+    def AnalyzeSales(self, lostCount, lostSalesPrice):
         totalSalesPrice = 0
         totalSalesCount = 0
         i = 0
@@ -40,13 +40,14 @@ class Menu:
             print(f'{i}. {v.GetName()} 판매 개수: {v.GetSales()}, 판매 금액: {v.GetSales()*v.GetPrice()}')
             totalSalesPrice += v.GetSales()*v.GetPrice()
             totalSalesCount += v.GetSales()
-
+        if lostCount > 0:
+            print(f'판매 목록에서 사라진 음료 판매 개수:{lostCount}, 판매 금액:{lostSalesPrice}')
         print("------------------------------------------")
-        print(f'총 판매 개수는 {totalSalesCount}이며 금액은 {totalSalesPrice}원 입니다.')
+        print(f'총 판매 개수는 {totalSalesCount+lostCount}이며 금액은 {totalSalesPrice+lostSalesPrice}원 입니다.')
 
 
     # 재고 충전
-    def RestockBeverage(self):
+    def Admin_RestockBeverage(self):
         # 선택 지문 출력
         userSelect = input("1. 음료수 판매대 재고 채우기.\t2. 음료수 발주 하기(미리 음료수 등록이 되어 있어야함)").replace(" ", "")
         name = ""
@@ -195,7 +196,7 @@ class Menu:
                 notSoldOutMenu[k] = v
         return notSoldOutMenu
 
-    def NewBeverage(self):
+    def Admin_NewBeverage(self):
         name = input("등록할 음료수 이름을 기입하시오.")
         if name.replace(" ", "") in self.haveBeverage.keys():
             print("이미 등록된 음료수입니다. 등록을 종료합니다.")
@@ -214,7 +215,7 @@ class Menu:
         self.haveBeverage[name] = (Beverage(name,price, count))
         print(f'{name} 음료를 등록 하였습니다. 음료수 메뉴 추가를 하시면 판매할 수 있습니다.')
 
-    def DeleteBeverage(self):
+    def Admin_DeleteBeverage(self):
         name = input("삭제할 음료수 이름을 기입하시오")
         if name.replace(" ", "") not in self.haveBeverage.keys():
             print("없는 음료수입니다. 음료 삭제를 종료합니다..")
@@ -235,11 +236,11 @@ class Menu:
             adminChoice = "제거"
             self.Admin_AddOrRemoveMenu(adminChoice)
         elif adminChoice == "3" or adminChoice == "등록" or adminChoice == "음료수등록":
-            self.NewBeverage()
+            self.Admin_NewBeverage()
         elif adminChoice == "4" or adminChoice == "삭제" or adminChoice == "음료수삭제":
-            self.DeleteBeverage()
+            self.Admin_DeleteBeverage()
         elif adminChoice == "5" or adminChoice == "충전" or adminChoice == "재고충전":
-            self.RestockBeverage()
+            self.Admin_RestockBeverage()
         elif adminChoice == "6" or adminChoice == "종료":
             print("설정을 종료 하겠습니다.")
         else:
@@ -248,8 +249,9 @@ class Menu:
     def ShowMenuList(self, selectDict:dict):
         i = 1
         for k, v in selectDict.items():
-            print(f'{i}. {v.GetName()} 가격: {v.GetPrice()}, 재고: {v.GetCount()}')
+            print(f'{i}. {v.GetName()} 가격: {v.GetPrice():,}원, 재고: {v.GetCount():,}개')
             i += 1
+
     def Admin_AddOrRemoveMenu(self, select):
         tmpDict = {}
         tmpList = []
