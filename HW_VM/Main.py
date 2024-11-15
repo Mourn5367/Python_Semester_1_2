@@ -1,13 +1,12 @@
 
 from HW_VM.Menu import Menu
 from HW_VM.VendingMachine import VendingMachine
+from Beverage import Beverage
 
 if __name__ == '__main__':
     menu = Menu()
     VM =  VendingMachine()
-    #menu.setBeverage()\
     while True:
-       # ㅁㄴㅇ= VM.SelectMenuOrEnterAdminMode(menu)
         userSelectBeverage = VM.SelectMenuOrEnterAdminMode(menu)
         if userSelectBeverage == "종료":
             VM.ReturnChangeMoney()
@@ -18,6 +17,7 @@ if __name__ == '__main__':
             if userSelectCount:
                 
                 # 이거 돈 적게 넣으면 그거에 맞는 피드백 넣어야함
+                VM.ShowOrderPrice(userSelectBeverage, userSelectCount)
                 if VM.insertMoney >= userSelectCount * userSelectBeverage.GetPrice():
                     isCount = VM.CheckChoiceAndMoney(userSelectBeverage, userSelectCount)
                 else:
@@ -25,15 +25,13 @@ if __name__ == '__main__':
                         isCount = VM.CheckChoiceAndMoney(userSelectBeverage, userSelectCount)
                     else:
                         continue
-                    if isCount:
-                        isContinue = VM.CalculateOrder(userSelectBeverage,userSelectCount)
 
-                        if isContinue:
-                            continue
-                        elif not isContinue:
-                            VM.ReturnChangeMoney()
-                            break
+                if isCount:
+                    isContinue = VM.CalculateOrder(userSelectBeverage,userSelectCount)
 
-    # menu.addBeverage("콜라")
-    # menu.addBeverage(1)
+                    if isContinue:
+                        continue
+                    elif not isContinue:
+                        VM.ReturnChangeMoney()
+                        break
 
