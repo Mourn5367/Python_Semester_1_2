@@ -20,7 +20,6 @@ if __name__ == '__main__':
 
             if userSelectCount:
                 
-                # 이거 돈 적게 넣으면 그거에 맞는 피드백 넣어야함
                 VM.ShowOrderPrice(userSelectBeverage, userSelectCount)
                 if VM.insertMoney >= userSelectCount * userSelectBeverage.GetPrice():
                     isCount = VM.CheckChoiceAndMoney(userSelectBeverage, userSelectCount)
