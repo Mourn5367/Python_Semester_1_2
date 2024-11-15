@@ -228,7 +228,7 @@ class Menu:
         print("현재 메뉴")
         self.ShowMenuList(self.menuDict)
         print()
-        adminChoice = input("1. 음료수 메뉴 추가\t2. 음료수 메뉴 제거\t3. 음료수 등록\t4. 음료수 삭제\t5. 재고 충전\t6. 종료").replace(" ","")
+        adminChoice = input("1. 음료수 메뉴 추가\t2. 음료수 메뉴 제거\t3. 음료수 등록\t4. 음료수 삭제\t5. 재고 충전\t6. 판매량 확인\t7. 판매량 초기화\t8. 종료").replace(" ","")
         if adminChoice == "1" or adminChoice == "추가" or adminChoice == "음료수메뉴추가":
             adminChoice = "추가"
             self.Admin_AddOrRemoveMenu(adminChoice)
@@ -241,7 +241,7 @@ class Menu:
             self.Admin_DeleteBeverage()
         elif adminChoice == "5" or adminChoice == "충전" or adminChoice == "재고충전":
             self.Admin_RestockBeverage()
-        elif adminChoice == "6" or adminChoice == "종료":
+        elif adminChoice == "8" or adminChoice == "종료":
             print("설정을 종료 하겠습니다.")
         else:
             print("잘못된 입력입니다.")

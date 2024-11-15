@@ -11,6 +11,7 @@ class VendingMachine:
         print(f'{beverage.GetName()}: {beverage.GetPrice():,}원 * {count:,}개 = 총 {beverage.GetPrice()*count:,}원')
         if beverage.GetPrice()*count > self.insertMoney:
             print(f'구입하려면 {beverage.GetPrice()*count - self.insertMoney:,}원 투입하여야 합니다.')
+
     def SelectMenuOrEnterAdminMode(self, menu:Menu)->Beverage:
         # 매진되지 않은 메뉴 출력
         menu.ShowMenuList(menu.NotSoldOutMenu())
