@@ -62,6 +62,7 @@ class MachineState:
     
     # 유저가 자판기 돈 넣는 상태     
     def UserInsertMoneyState(self, VM:VendingMachine, menu:Menu,admin:Admin, userSelectBeverage:Beverage, userSelectCount:int):
+        VM.ShowOrderPrice(userSelectBeverage,userSelectCount)
         if VM.insertMoney >= userSelectCount * userSelectBeverage.GetPrice():
             isCount = VM.CheckChoiceAndMoney(userSelectBeverage, userSelectCount)
             return self.CalculateState(VM, menu, admin, userSelectBeverage, userSelectCount, isCount)

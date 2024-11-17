@@ -2,8 +2,8 @@ from HW_VM.Beverage import Beverage
 
 class Menu:
     def __init__(self):
-        self.menuDict = {"콜라":Beverage("콜라",2000,0),
-                         "사이다":Beverage("사이다",1500,0),
+        self.menuDict = {"콜라":Beverage("콜라",2000,1),
+                         "사이다":Beverage("사이다",1500,1),
                          "보리차":Beverage("보리차",2000,0)}
         self.haveBeverage = {"콜라":Beverage("콜라",2000,150),
                              "사이다":Beverage("사이다",1500,100),
