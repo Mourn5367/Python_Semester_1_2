@@ -34,7 +34,7 @@ class Beverage:
         self.__salesCount += count
 
     def GetSales(self):
-        return self.__count
+        return self.__salesCount
 
     def ResetSales(self):
         self.__salesCount = 0

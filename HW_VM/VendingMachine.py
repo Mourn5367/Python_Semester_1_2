@@ -1,6 +1,6 @@
 from HW_VM.Beverage import Beverage
 from HW_VM.Menu import Menu
-
+from HW_VM.Admin import Admin
 
 
 class VendingMachine:
@@ -12,7 +12,7 @@ class VendingMachine:
         if beverage.GetPrice()*count > self.insertMoney:
             print(f'구입하려면 {beverage.GetPrice()*count - self.insertMoney:,}원 투입하여야 합니다.')
 
-    def SelectMenuOrEnterAdminMode(self, menu:Menu)->Beverage:
+    def SelectMenuOrEnterAdminMode(self, menu:Menu,admin:Admin)->Beverage:
         # 매진되지 않은 메뉴 출력
         menu.ShowMenuList(menu.NotSoldOutMenu())
         print(f'{len(menu.NotSoldOutMenu())+1}. 구입 종료')
@@ -28,7 +28,7 @@ class VendingMachine:
         else:
             userSelect = input(f'원하시는 메뉴를 선택하여 주십시오.\t(현재 금액: {self.insertMoney:,}원)').replace(" ","")
             if userSelect == "999":
-                menu.CallAdmin()
+                admin.CallAdmin(menu)
                 return None
             
             else:
@@ -78,14 +78,15 @@ class VendingMachine:
             print("잘못된 입력입니다.")
             return False
 
-    def CalculateOrder(self, userSelect:Beverage,count:int)->bool:
+    def CalculateOrder(self, userSelect:Beverage,count:int,menu:Menu)->bool:
 
         totalPrice = userSelect.GetPrice() * count
 
         self.insertMoney -= totalPrice
 
         userSelect.Sales(count)
-
+        menu.totalSalesCount += count
+        menu.totalPrice += totalPrice
         print(f'{userSelect.GetName()}을(를) {count:,}개 구입하여 {totalPrice:,}원 소모하였습니다')
         print(f'현재 자판기에 남아있는 금액은 {self.insertMoney:,}원입니다.')
         continueOrder = input("1. 구입한다.\t2. 종료한다.").replace(" ","").rstrip(".")

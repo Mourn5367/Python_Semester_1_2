@@ -1,4 +1,4 @@
-
+from HW_VM.Admin import Admin
 from HW_VM.Menu import Menu
 from HW_VM.VendingMachine import VendingMachine
 
@@ -7,11 +7,13 @@ if __name__ == '__main__':
     menu = Menu()
     # 자판기 객체 생성
     VM =  VendingMachine()
+    admin = Admin()
+
     while True:
         # 사용자의 입력을 받아 어떤 음료를 고를것인지
         # 999를 입력하여 관리자모드로 들어갈 것인지
         # 종료 혹은 음료수 개수 +1 만큼 눌러 구입을 중단할 것인지
-        userSelectBeverage = VM.SelectMenuOrEnterAdminMode(menu)
+        userSelectBeverage = VM.SelectMenuOrEnterAdminMode(menu,admin)
         if userSelectBeverage == "종료":
             VM.ReturnChangeMoney()
             break
@@ -30,7 +32,7 @@ if __name__ == '__main__':
                         continue
 
                 if isCount:
-                    isContinue = VM.CalculateOrder(userSelectBeverage,userSelectCount)
+                    isContinue = VM.CalculateOrder(userSelectBeverage,userSelectCount,menu)
 
                     if isContinue:
                         continue
