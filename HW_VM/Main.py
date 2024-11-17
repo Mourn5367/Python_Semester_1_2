@@ -1,4 +1,10 @@
+# 2024_11_18_파이썬_기초_실습_과제
+# 한국폴리텍대학_서울정수캠퍼스_인공지능소프트웨어과
+# 2401110252_박지수
+# 자판기 만들기
+# https://github.com/Mourn5367/Python_Semester_1_2/tree/master/HW_VM
 from HW_VM.Admin import Admin
+from HW_VM.MachineState import MachineState
 from HW_VM.Menu import Menu
 from HW_VM.VendingMachine import VendingMachine
 
@@ -7,36 +13,12 @@ if __name__ == '__main__':
     menu = Menu()
     # 자판기 객체 생성
     VM =  VendingMachine()
+    # 관리자 객체 생성
     admin = Admin()
+    # 기계 상태 객체 생성
+    machineState = MachineState()
 
     while True:
-        # 사용자의 입력을 받아 어떤 음료를 고를것인지
-        # 999를 입력하여 관리자모드로 들어갈 것인지
-        # 종료 혹은 음료수 개수 +1 만큼 눌러 구입을 중단할 것인지
-        userSelectBeverage = VM.SelectMenuOrEnterAdminMode(menu,admin)
-        if userSelectBeverage == "종료":
-            VM.ReturnChangeMoney()
-            break
-        if userSelectBeverage:
-            userSelectCount = VM.CountOrder(userSelectBeverage)
+        machineState.ActivateMachine(VM,menu,admin)
 
-            if userSelectCount:
-                
-                VM.ShowOrderPrice(userSelectBeverage, userSelectCount)
-                if VM.insertMoney >= userSelectCount * userSelectBeverage.GetPrice():
-                    isCount = VM.CheckChoiceAndMoney(userSelectBeverage, userSelectCount)
-                else:
-                    if VM.UserInsertMoney():
-                        isCount = VM.CheckChoiceAndMoney(userSelectBeverage, userSelectCount)
-                    else:
-                        continue
-
-                if isCount:
-                    isContinue = VM.CalculateOrder(userSelectBeverage,userSelectCount,menu)
-
-                    if isContinue:
-                        continue
-                    elif not isContinue:
-                        VM.ReturnChangeMoney()
-                        break
 

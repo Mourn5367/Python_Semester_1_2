@@ -5,6 +5,8 @@ from HW_VM.Menu import Menu
 class Admin:
     def __init__(self):
         pass
+    
+    #음료 판매 개수 초기화
     def Admin_SalesReset(self,menu:Menu):
 
         for k , v in menu.menuDict.items():
@@ -12,7 +14,8 @@ class Admin:
         menu.totalSalesCount = 0
         menu.totalPrice = 0
         print("판매량이 초기화 되었습니다.")
-
+    
+    # 음료 판매량 분석
     def Admin_AnalyzeSales(self,menu:Menu, machineTotalSalesCount, machineTotalPrice):
         beverageTotalPrice = 0
         beverageTotalsalesCount = 0
@@ -28,16 +31,12 @@ class Admin:
         print("------------------------------------------")
         print(f'총 판매 개수는 {beverageTotalsalesCount + machineTotalSalesCount:,}개 이며 금액은 {beverageTotalPrice + machineTotalPrice:,}원 입니다.')
 
-    def Admin_RestockBeverage(self,menu:Menu):
-        # 선택 지문 출력
-        userSelect = input("1. 음료수 판매대 재고 채우기.\t2. 음료수 발주 하기(미리 음료수 등록이 되어 있어야함)").replace(" ", "")
-        name = ""
-        count = 0
-        # 판매대에 재고를 채우기 위한 입력을 받았을 때
-        if userSelect == "1" or userSelect == "음료수판매대재고채우기" or userSelect == "채우기":
-            i = 1  # 순번을 넣기 위한 i
+    # 현재 판매중인 음료 출력, 보유하고 있는 음료 출력
+    def Admin_ShowCount(self,menu:Menu,menuDictOrhaverBerverage:dict):
+
+        if menuDictOrhaverBerverage == menu.menuDict:
             # 판매대의 키값과 밸류값 받아오기
-            for k, v in menu.menuDict.items():
+            for i, (k, v) in enumerate(menu.menuDict.items(),1):
                 # 판매대에 팔고있는 이름과 재고 수 출력
                 print(f'{i}. {v.GetName()}\t판매대 재고: {v.GetCount():,}개\t', end="")
                 # 등록된 음료수라면 보유 재고에서 몇개 있는지 출력
@@ -46,10 +45,48 @@ class Admin:
                 # 등록되지 않은 음료수라고 출력
                 else:
                     print("보유 재고: 등록되지 않은 음료수입니다.\t", end="")
-                i += 1
-
             print()  # 한줄 띄우기
+        elif menuDictOrhaverBerverage == menu.haveBeverage:
+            # 보유 재고의 딕셔너리를 출력
+            for i, (k, v) in enumerate(menu.haveBeverage.items(),1):
+                print(f'{i}. {v.GetName()} {v.GetCount():,}개\t', end="")
+            print()
+    
+    # 보유하지 않은 음료일 경우
+    def isHaveBeverage(self,beverage:Beverage,haveBeverage:dict)->bool:
+        if beverage.GetName() not in haveBeverage.keys():
+            print(f'등록된 음료수 중 {beverage.GetName()}는 없어 음료 재고 충전을 종료합니다.')
+            return False
+        else:
+            return True
+    
+    # 충전 개수가 숫자값으로 들어 올 때
+    def isCountDigit(self,count,beverage:Beverage,menu:Menu):
+        if count.isdigit():
+            # 충전 개수만큼 보유재고가 있는지 확인
+            if int(count) <= menu.haveBeverage[beverage.GetName()].GetCount():
+                # 만약 충전 개수만큼 보유재고가 있다면 그만큼 해당 음료수에 재고 수를 추가함.
+                menu.menuDict[beverage.GetName()].InsertCount(int(count))
+                # 추가한 재고 수 만큼 보유재고는 그만큼 차감함.
+                menu.haveBeverage[beverage.GetName()].ExtractCount(int(count))
+                print(f'재고가 충전되어 판매대에는 {menu.menuDict[beverage.GetName()].GetCount():,}개 되었고'
+                      f' 보유 재고는 {menu.haveBeverage[beverage.GetName()].GetCount():,}개 되었습니다. ')
+            else:
+                # 보유재고가 충전 개수보다 작다면 알림을 주고 종료
+                print(
+                    f'{menu.haveBeverage[beverage.GetName()].GetName()}의 보유 재고({menu.haveBeverage[beverage.GetName()].GetCount():,})개 가'
+                    f' 입력한 {count:,}개 보다 적어 재고 충전을 종료합니다.')
+            # 숫자가 아니라면 종료
+        else:
+            print("숫자 또는 양수의 값이 입력 되지 않아 재고 충전을 종료합니다.")
 
+    def Admin_RestockBeverage(self,menu:Menu):
+        # 선택 지문 출력
+        userSelect = input("1. 음료수 판매대 재고 채우기.\t2. 음료수 발주 하기(미리 음료수 등록이 되어 있어야함)").replace(" ", "")
+        # 판매대에 재고를 채우기 위한 입력을 받았을 때
+        if userSelect == "1" or userSelect == "음료수판매대재고채우기" or userSelect == "채우기":
+            # 현재 판매대의 재고현황과 보충할수있는 재고 물량 표시
+            self.Admin_ShowCount(menu,menu.menuDict)
             # 1. 콜라 판매대 재고: N개 보유 재고 :N개... 출력한 뒤 무슨 음료수의 재고를 넣을 것인지 입력받음
             name = input("재고를 채워 넣을 음료수 이름을 기입하시오.")
 
@@ -62,8 +99,7 @@ class Admin:
                 if int(name) <= len(tmpList):
                     # 리스트를 통해서 어떤 음료수인지 특정한 다음 이름(key)을 가져와서 판매대의 무슨 음료인지 가져옴
                     tmpBeverage = menu.menuDict[tmpList[int(name) - 1][0]]
-                    if tmpBeverage.GetName() not in menu.haveBeverage.keys():
-                        print(f'등록된 음료수 중 {tmpBeverage.GetName()}는 없어 음료 재고 충전을 종료합니다.')
+                    if not self.isHaveBeverage(tmpBeverage,menu.haveBeverage):
                         return
                     # 음료수의 이름, 재고 수를 출력하여 몇개 넣을것인지 입력받음
                     print(f'{tmpBeverage.GetName()}를 몇개 채워넣겠습니까?\n현재({tmpBeverage.GetCount():,}개)', end="")
@@ -74,24 +110,7 @@ class Admin:
                         count = input(": ")
 
                     # 입력받은 재고 충전 개수가 숫자인지 확인
-
-                    if count.isdigit():
-                        # 충전 개수만큼 보유재고가 있는지 확인
-                        if int(count) <= menu.haveBeverage[tmpBeverage.GetName()].GetCount():
-                            # 만약 충전 개수만큼 보유재고가 있다면 그만큼 해당 음료수에 재고 수를 추가함.
-                            menu.menuDict[tmpBeverage.GetName()].InsertCount(int(count))
-                            # 추가한 재고 수 만큼 보유재고는 그만큼 차감함.
-                            menu.haveBeverage[tmpBeverage.GetName()].ExtractCount(int(count))
-                            print(f'충전되어 판매대에는 {menu.menuDict[tmpBeverage.GetName()].GetCount():,}개 되었고'
-                                  f' 보유 재고는 {menu.haveBeverage[tmpBeverage.GetName()].GetCount():,}개 되었습니다. ')
-                        else:
-                            # 보유재고가 충전 개수보다 작다면 알림을 주고 종료
-                            print(
-                                f'{menu.haveBeverage[tmpBeverage.GetName()].GetName()}의 보유 재고({menu.haveBeverage[tmpBeverage.GetName()].GetCount():,})가'
-                                f' 입력한 {count}보다 적어 재고 충전을 종료합니다.')
-                    # 숫자가 아니라면 종료
-                    else:
-                        print("숫자 또는 양수의 값이 입력 되지 않아 재고 충전을 종료합니다.")
+                    self.isCountDigit(count,tmpBeverage,menu)
                 else:
                     print("잘못된 입력입니다. 재고 충전을 종료합니다.")
 
@@ -102,8 +121,7 @@ class Admin:
                 tmpBeverage = menu.menuDict[name]
 
                 # 해당 음료가 등록되지 않은 음료수라면 종료
-                if tmpBeverage.GetName() not in menu.haveBeverage.keys():
-                    print(f'등록된 음료수 중 {tmpBeverage.GetName()}는 없어 음료 재고 충전을 종료합니다.')
+                if not self.isHaveBeverage(tmpBeverage, menu.haveBeverage):
                     return
 
                 # 맻개 채워 넣을지
@@ -113,30 +131,16 @@ class Admin:
                 else:
                     count = input(": ")
 
-                if count.isdigit():
-                    if int(count) <= menu.haveBeverage[tmpBeverage.GetName()].GetCount():
-                        menu.menuDict[tmpBeverage.GetName()].InsertCount(int(count))
-                        menu.haveBeverage[tmpBeverage.GetName()].ExtractCount(int(count))
-                        print(f'충전되어 판매대에는 {menu.menuDict[tmpBeverage.GetName()].GetCount():,}개 되었고'
-                              f' 보유 재고는 {menu.haveBeverage[tmpBeverage.GetName()].GetCount():,}개 되었습니다. ')
-                    else:
-                        print(
-                            f'{menu.haveBeverage[tmpBeverage.GetName()].GetName()}의 보유 재고({menu.haveBeverage[tmpBeverage.GetName()].GetCount():,})가'
-                            f' 입력한 {count:,}개 보다 적어 재고 충전을 종료합니다.')
-                else:
-                    print("숫자 또는 양수의 값이 입력 되지 않아 재고 충전을 종료합니다.")
+                # 입력받은 재고 충전 개수가 숫자인지 확인
+                self.isCountDigit(count, tmpBeverage, menu)
+
             elif name not in menu.menuDict.keys():
                 print(f'판매대에 {name}는 없습니다.')
                 print("음료 재고 충전을 종료합니다.")
 
         # 보유 재고의 음료를 발주한다면
         elif userSelect == "2" or userSelect == "음료수발주하기" or userSelect == "발주":
-            i = 1
-            # 보유 재고의 딕셔너리를 출력
-            for k, v in menu.haveBeverage.items():
-                print(f'{i}. {v.GetName()} {v.GetCount():,}개\t', end="")
-                i += 1
-            print()
+            self.Admin_ShowCount(menu, menu.haveBeverage)
             name = input("발주할 음료수 이름을 기입하시오.")
             # 입력을 숫자로 했다면
             if name.isdigit():
@@ -205,27 +209,39 @@ class Admin:
         print("현재 메뉴")
         menu.ShowMenuList(menu.menuDict)
         print()
-        adminChoice = input("1. 음료수 메뉴 추가\t2. 음료수 메뉴 제거\t3. 음료수 등록\t4. 음료수 삭제\t5. 재고 충전\t6. 판매량 확인\t7. 판매량 초기화\t8. 종료").replace(" ","")
+        adminChoice = input("1. 음료수 메뉴 추가\t2. 음료수 메뉴 제거\t3. 음료수 등록\t4. 음료수 삭제\t5. 재고 충전\t6. 판매량 확인\t7. 판매량 초기화\t8. 설정 종료\t9. 기계 종료").replace(" ","")
         if adminChoice == "1" or adminChoice == "추가" or adminChoice == "음료수메뉴추가":
             adminChoice = "추가"
-            self.Admin_AddOrRemoveMenu(adminChoice)
+            self.Admin_AddOrRemoveMenu(menu,adminChoice)
+            return None
         elif adminChoice == "2" or adminChoice == "제거" or adminChoice == "음료수메뉴제거":
             adminChoice = "제거"
-            self.Admin_AddOrRemoveMenu(adminChoice)
+            self.Admin_AddOrRemoveMenu(menu,adminChoice)
+            return None
         elif adminChoice == "3" or adminChoice == "등록" or adminChoice == "음료수등록":
             self.Admin_NewBeverage(menu)
+            return None
         elif adminChoice == "4" or adminChoice == "삭제" or adminChoice == "음료수삭제":
             self.Admin_DeleteBeverage(menu)
+            return None
         elif adminChoice == "5" or adminChoice == "충전" or adminChoice == "재고충전":
             self.Admin_RestockBeverage(menu)
+            return None
         elif adminChoice == "6" or adminChoice == "확인" or adminChoice == "판매량확인":
             self.Admin_AnalyzeSales(menu,menu.totalSalesCount,menu.totalPrice)
+            return None
         elif adminChoice == "7" or adminChoice == "초기화" or adminChoice == "판매량초기화":
             self.Admin_SalesReset(menu)
-        elif adminChoice == "8" or adminChoice == "종료":
+            return None
+        elif adminChoice == "8" or adminChoice == "설정종료":
             print("설정을 종료 하겠습니다.")
+            return "설정 종료"
+        elif adminChoice == "9" or adminChoice == "기계종료":
+            print("자판기 판매를 종료합니다.")
+            return "자판기 종료"
         else:
             print("잘못된 입력입니다.")
+            return "다시"
 
     def Admin_AddOrRemoveMenu(self,menu:Menu, select):
         tmpDict = {}

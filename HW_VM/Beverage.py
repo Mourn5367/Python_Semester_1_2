@@ -17,9 +17,6 @@ class Beverage:
     def ExtractCount(self, count):
         self.__count -= count
 
-    def ChangeName(self, name):
-        self.__name = name
-
     def GetName(self):
         return self.__name
 
