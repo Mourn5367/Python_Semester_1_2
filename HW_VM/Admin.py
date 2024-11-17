@@ -77,7 +77,7 @@ class Admin:
                 # 보유재고가 충전 개수보다 작다면 알림을 주고 종료
                 print(
                     f'{menu.haveBeverage[beverage.GetName()].GetName()}의 보유 재고({menu.haveBeverage[beverage.GetName()].GetCount():,})개 가'
-                    f' 입력한 {count:,}개 보다 적어 재고 충전을 종료합니다.')
+                    f' 입력한 {int(count):,}개 보다 적어 재고 충전을 종료합니다.')
             # 숫자가 아니라면 종료
         else:
             print("숫자 또는 양수의 값이 입력 되지 않아 재고 충전을 종료합니다.")
