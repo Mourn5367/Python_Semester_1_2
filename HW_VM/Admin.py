@@ -28,8 +28,10 @@ class Admin:
         if machineTotalSalesCount != beverageTotalsalesCount:
             print(f'판매 목록에서 사라진 음료 판매 개수:{machineTotalSalesCount - beverageTotalsalesCount:,}개,'
                   f' 판매 금액:{machineTotalPrice - beverageTotalPrice:,}원')
+            print("------------------------------------------")
+            print(f'총 판매 개수는 {beverageTotalsalesCount + machineTotalSalesCount:,}개 이며 금액은 {beverageTotalPrice + machineTotalPrice:,}원 입니다.')
         print("------------------------------------------")
-        print(f'총 판매 개수는 {beverageTotalsalesCount + machineTotalSalesCount:,}개 이며 금액은 {beverageTotalPrice + machineTotalPrice:,}원 입니다.')
+        print(f'총 판매 개수는 {beverageTotalsalesCount:,}개 이며 금액은 {beverageTotalPrice:,}원 입니다.')
 
     # 현재 판매중인 음료 출력, 보유하고 있는 음료 출력
     def Admin_ShowCount(self,menu:Menu,menuDictOrhaverBerverage:dict):
@@ -197,8 +199,14 @@ class Admin:
         print(f'{name} 음료를 등록 하였습니다. 음료수 메뉴 추가를 하시면 판매할 수 있습니다.')
 
     def Admin_DeleteBeverage(self,menu:Menu):
+        menu.ShowMenuList(menu.haveBeverage)
         name = input("삭제할 음료수 이름을 기입하시오")
-        if name.replace(" ", "") not in menu.haveBeverage.keys():
+        if name.isdigit():
+            tmpList = list(menu.haveBeverage.items())
+            if int(name) <= len(tmpList):
+                tmpBeverage = menu.haveBeverage[tmpList[int(name) - 1][0]]
+                name = tmpBeverage.GetName()
+        elif name.replace(" ", "") not in menu.haveBeverage.keys():
             print("없는 음료수입니다. 음료 삭제를 종료합니다..")
             return
         menu.haveBeverage.pop(name)
