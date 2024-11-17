@@ -275,10 +275,12 @@ class Admin:
                 return
 
         if adminChoice in tmpDict.keys():
+            tmpBeverage = tmpDict[adminChoice]
             if select == "추가":
 
                 if adminChoice not in menu.menuDict.keys():
-                    menu.menuDict[adminChoice] = tmpDict[adminChoice]
+                    menu.menuDict[tmpBeverage.GetName()] = Beverage(tmpBeverage.GetName(),tmpBeverage.GetPrice(),tmpBeverage.GetCount())
+                    menu.haveBeverage[tmpBeverage.GetName()].ExtractCount(tmpBeverage.GetCount())
                 else:
                     print("이미 추가되어 있습니다.")
 
@@ -292,10 +294,11 @@ class Admin:
             if 1 <= int(adminChoice) <= len(tmpList):
                 adminChoice = int(adminChoice) - 1
                 adminChoice = tmpList[adminChoice][0]  # 이때 String 타입변경
-
+                tmpBeverage = tmpDict[adminChoice]
                 if select == "추가":
                     if adminChoice not in menu.menuDict.keys():
-                        menu.menuDict[adminChoice] = tmpDict[adminChoice]
+                        menu.menuDict[tmpBeverage.GetName()] = Beverage(tmpBeverage.GetName(),tmpBeverage.GetPrice(),tmpBeverage.GetCount())
+                        menu.haveBeverage[tmpBeverage.GetName()].ExtractCount(tmpBeverage.GetCount())
                     else:
                         print("이미 추가되어 있습니다.")
 
