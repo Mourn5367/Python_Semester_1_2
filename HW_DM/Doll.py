@@ -1,10 +1,11 @@
-class Doll:
-    def __init__(self, name, price, count):
-        self.__name = name
-        self.__price = price
-        self.__count = count
-        self.__salesCount = 0
-        self.__position = []
+from HW_DM.Product import Product
+
+
+class Doll(Product):
+    def __init__(self, name, price,count,salesCount,position:list):
+        super().__init__(name, price,count)
+        self.__salesCount = salesCount
+        self.__position = position
 
     def ChangeCount(self, count):
         self.__count = count
@@ -12,17 +13,8 @@ class Doll:
     def InsertCount(self, count):
         self.__count += count
 
-    def ExtractCount(self, count):
+    def ExtractCount(self, count = 1):
         self.__count -= count
-
-    def GetName(self):
-        return self.__name
-
-    def GetPrice(self):
-        return self.__price
-
-    def GetCount(self):
-        return self.__count
 
     def Sales(self,count):
         self.__count -= count
