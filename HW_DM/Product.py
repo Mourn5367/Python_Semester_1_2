@@ -4,6 +4,8 @@ class Product:
         self._name = name
         self._price = price
         self._count = count
+        self._sales = 0
+        self._salesCount = 0
 
     def GetName(self):
         return self._name
@@ -13,3 +15,13 @@ class Product:
 
     def GetCount(self):
         return self._count
+
+    def GetSales(self):
+        return self._sales
+
+    def Sales(self,count):
+        self._count -= count
+        self._salesCount += count
+
+    def ResetSales(self):
+        self._salesCount = 0

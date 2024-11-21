@@ -60,3 +60,68 @@ class Machine:
         else:
             print("이용해 주셔서 감사합니다.")
             return None
+    def CalculateOrder(self, userSelect:Product,count:int,menu:ProductList)->bool:
+
+        totalPrice = userSelect.GetPrice() * count
+
+        self.insertMoney -= totalPrice
+
+        userSelect.Sales(count)
+        menu.totalSalesCount += count
+        menu.totalPrice += totalPrice
+        print(f'{userSelect.GetName()}을(를) {count:,}개 구입하여 {totalPrice:,}원 소모하였습니다')
+        print(f'현재 자판기에 남아있는 금액은 {self.insertMoney:,}원입니다.')
+        continueOrder = input("1. 구입한다.\t2. 종료한다.").replace(" ","").rstrip(".")
+        if continueOrder == "1" or continueOrder == "구입한다":
+            return True
+        elif continueOrder == "2" or continueOrder == "종료한다":
+            return False
+        else:
+            print("잘못된 입력을 하여 초기 화면으로 돌아갑니다.")
+            return False
+
+    def SelectMenuOrEnterAdminMode(self, productList: ProductList, admin: Admin) -> Product:
+        # 매진되지 않은 메뉴 출력
+        print("-------판매중인 음료수 목록-------")
+        productList.ShowMenuList(productList.NotSoldOutMenu())
+        print(f'{len(productList.NotSoldOutMenu()) + 1}. 구입 종료')
+        # 숫자 입력을 대비한 매진되지 않은 딕셔너리를 리스트로 변경
+        tmpMenuList = list(productList.NotSoldOutMenu().items())
+
+        # 유저의 입력을 담을 변수
+        userSelect = ""
+
+        # 판매대에 올라와 있는 음료가 하나도 없음.
+
+        userSelect = input(f'원하시는 메뉴를 선택하여 주십시오.\t(현재 금액: {self.insertMoney:,}원)').replace(" ", "")
+        if userSelect == "999":
+            return admin
+
+        else:
+            # 입력값이 메뉴의 이름(키값)과 일치할 경우
+            if userSelect in productList.NotSoldOutMenu().keys():
+                return productList.NotSoldOutMenu()[userSelect]
+            # 메뉴의 이름도 맞지않고 양수도 아닐경우
+            elif userSelect == "종료" or userSelect == "구입종료" or userSelect == str((len(productList.NotSoldOutMenu()) + 1)):
+                return "종료"
+            elif not userSelect.isdigit():
+                print("잘못된 입력입니다")
+                return None
+            # 숫자로 주문한 경우
+            elif int(userSelect):
+                # 팔고 있는 메뉴의 갯수 보다 아래의 입력값을 넣을 경우 (잘 넣은 경우)
+                if 1 <= int(userSelect) <= len(tmpMenuList):
+                    return tmpMenuList[int(userSelect) - 1][1]
+
+    def CountOrder(self, userSelect: Product) -> int:
+        tmpCount = input("구입할 개수를 기입하여 주십시오.:")
+
+        if tmpCount.isdigit():
+            if userSelect.GetCount() >= int(tmpCount):
+                return int(tmpCount)
+            else:
+                print(f'재고가 {int(tmpCount) - userSelect.GetCount():,}개 만큼 부족합니다.')
+                return False
+        else:
+            print("잘못된 입력입니다.")
+            return False
