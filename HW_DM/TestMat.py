@@ -1,26 +1,49 @@
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
-import matplotlib.image as mpimg
+from PIL import Image
 
-img = mpimg.imread('js.png')
+# 데이터 생성
 
-# 이미지 데이터 정규화 (0-1 범위로 변환)
-if img.dtype == np.uint8:  # 0-255 범위의 정수형
-    img = img / 255.0  # 0-1 범위로 변환
-# 3D 플롯 생성
-fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
-# X축 면
-x = np.array([[0, 1], [0, 1]])
-y = np.array([[0, 0], [1, 1]])
-z = np.array([[0, 0], [0, 0]])
-#ax.plot_surface(x, y, z, color='red', alpha=1)
-ax.plot_surface(x, y, z, rstride=1, cstride=1, facecolors=img/255.0, alpha=1)
+# 첫 번째 배경 이미지 로드
+background_image = Image.open("bback.webp")  # 첫 번째 이미지 경로
 
-ax.set_xlim(0,1)
-ax.set_ylim(0,1)
-ax.set_zlim(0,1)
+# 두 번째 이미지 로드
+doll1 = Image.open("doll1.png")  # 두 번째 이미지 경로로 변경
+claw = Image.open("claw.webp")  # 두 번째 이미지 경로로 변경
+
+# 이미지 크기 설정 (3, 3) 크기로 설정
+doll1_w = 2
+doll1_h = 2
+claw_w = 2
+claw_h = 2
+# 그래프 설정
+fig, ax = plt.subplots()
+
+# 배경 이미지 설정
+ax.imshow(background_image, aspect='auto', extent=[0, 10, 0, 10], zorder=0)
+
+# x축과 y축 범위 설정
+ax.set_xlim(0, 10)  # x축 범위 설정
+ax.set_ylim(0, 10)  # y축 범위 설정
+
+# 첫 번째 이미지 삽입: (x, y) 위치와 (width, height) 크기
+# 예를 들어 (4, 4) 위치에 (3, 3) 크기로 삽입
+doll1_x = 0
+doll1_y = 0
+claw_x = 0
+claw_y = 8
+ax.imshow(doll1, aspect='auto', extent=[doll1_x, doll1_x + doll1_w, doll1_y, doll1_y + doll1_h],
+          zorder=1)
+ax.imshow(claw, aspect='auto', extent=[claw_x, doll1_x + claw_w, claw_y, claw_y + claw_h],
+          zorder=1)
+
+
+# 모든 축 레이블, 타이틀, 범례 제거
+# ax.set_xticks([])  # x축 눈금 제거
+# ax.set_yticks([])  # y축 눈금 제거
+ax.set_xlabel("")  # x축 레이블 제거
+ax.set_ylabel("")  # y축 레이블 제거
+ax.set_title("")   # 그래프 제목 제거
 
 # 그래프 표시
 plt.show()
