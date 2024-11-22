@@ -1,7 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
-
+from Doll import Doll
+from DollList import DollList
+from matplotlib.axes import Axes
 # 데이터 생성
 
 # 첫 번째 배경 이미지 로드
@@ -10,6 +12,10 @@ background_image = Image.open("bback.webp")  # 첫 번째 이미지 경로
 # 두 번째 이미지 로드
 doll1 = Image.open("doll1.png")  # 두 번째 이미지 경로로 변경
 claw = Image.open("claw.webp")  # 두 번째 이미지 경로로 변경
+
+dollList = DollList()
+
+
 
 # 이미지 크기 설정 (3, 3) 크기로 설정
 doll1_w = 2
@@ -32,10 +38,25 @@ doll1_x = 0
 doll1_y = 0
 claw_x = 0
 claw_y = 8
-ax.imshow(doll1, aspect='auto', extent=[doll1_x, doll1_x + doll1_w, doll1_y, doll1_y + doll1_h],
-          zorder=1)
-ax.imshow(claw, aspect='auto', extent=[claw_x, doll1_x + claw_w, claw_y, claw_y + claw_h],
-          zorder=1)
+
+
+
+# imgPath = dollList.menuDict["A"].GetImgPath()
+def ImgSetting(ax: Axes, imgPath:str, dollPosition:list):
+    ax.imshow(imgPath, aspect='auto',
+              extent=[dollPosition[0], dollPosition[0] + Doll.GetSize(), dollPosition[1], dollPosition[1] + Doll.GetSize()],
+              zorder=1)
+
+def DrawDoll():
+    ax.clear()
+    for k, v in dollList.menuDict.items():
+        ImgSetting(ax, v.GetImgPath(), v.GetPosition())
+
+def DrawClaw():
+    ax.imshow(claw, aspect='auto', extent=[claw_x, claw_x + claw_w, claw_y, claw_y + claw_h],
+              zorder=1)
+
+DrawDoll()
 
 
 # 모든 축 레이블, 타이틀, 범례 제거
