@@ -1,70 +1,108 @@
-import matplotlib.pyplot as plt
-import numpy as np
-from PIL import Image
-from Doll import Doll
-from DollList import DollList
-from matplotlib.axes import Axes
-# 데이터 생성
-
-# 첫 번째 배경 이미지 로드
-background_image = Image.open("bback.webp")  # 첫 번째 이미지 경로
-
-# 두 번째 이미지 로드
-doll1 = Image.open("doll1.png")  # 두 번째 이미지 경로로 변경
-claw = Image.open("claw.webp")  # 두 번째 이미지 경로로 변경
-
-dollList = DollList()
-
-
-
-# 이미지 크기 설정 (3, 3) 크기로 설정
-doll1_w = 2
-doll1_h = 2
-claw_w = 2
-claw_h = 2
-# 그래프 설정
-fig, ax = plt.subplots()
-
-# 배경 이미지 설정
-ax.imshow(background_image, aspect='auto', extent=[0, 10, 0, 10], zorder=0)
-
-# x축과 y축 범위 설정
-ax.set_xlim(0, 10)  # x축 범위 설정
-ax.set_ylim(0, 10)  # y축 범위 설정
-
-# 첫 번째 이미지 삽입: (x, y) 위치와 (width, height) 크기
-# 예를 들어 (4, 4) 위치에 (3, 3) 크기로 삽입
-doll1_x = 0
-doll1_y = 0
-claw_x = 0
-claw_y = 8
-
-
-
-# imgPath = dollList.menuDict["A"].GetImgPath()
-def ImgSetting(ax: Axes, imgPath:str, dollPosition:list):
-    ax.imshow(imgPath, aspect='auto',
-              extent=[dollPosition[0], dollPosition[0] + Doll.GetSize(), dollPosition[1], dollPosition[1] + Doll.GetSize()],
-              zorder=1)
-
-def DrawDoll():
-    ax.clear()
-    for k, v in dollList.menuDict.items():
-        ImgSetting(ax, v.GetImgPath(), v.GetPosition())
-
-def DrawClaw():
-    ax.imshow(claw, aspect='auto', extent=[claw_x, claw_x + claw_w, claw_y, claw_y + claw_h],
-              zorder=1)
-
-DrawDoll()
-
-
-# 모든 축 레이블, 타이틀, 범례 제거
-# ax.set_xticks([])  # x축 눈금 제거
-# ax.set_yticks([])  # y축 눈금 제거
-ax.set_xlabel("")  # x축 레이블 제거
-ax.set_ylabel("")  # y축 레이블 제거
-ax.set_title("")   # 그래프 제목 제거
-
-# 그래프 표시
-plt.show()
+# import random
+#
+# import matplotlib.pyplot as plt
+# import numpy as np
+# from PIL import Image
+# from HW_DM.Doll import Doll
+# from DollList import DollList
+# from matplotlib.axes import Axes
+#
+# from HW_DM.Claw import Claw
+# from HW_DM.DollBox import DollBox
+#
+# # 데이터 생성
+# # 첫 번째 배경 이미지 로드
+# background_image = Image.open("backImg/bg.jpg")  # 첫 번째 이미지 경로
+# probability = random.random()
+# dollList = DollList()
+# claw = Claw()
+# dollBox = DollBox()
+#
+# # 이미지 설정 함수
+# def DrawDoll(ax: Axes, imgPath: str, dollPosition: int, menuLen:int):
+#     for i in range(menuLen):
+#         ax.imshow(imgPath, aspect='auto',
+#                   extent=[dollPosition, dollPosition + Doll.GetSize(), 0,
+#                           Doll.GetSize()],
+#                   zorder=1)
+# # 인형 그리기 함수
+# def SettingDoll(ax: Axes,dollList: DollList):
+#     for k, v in dollList.menuDict.items():
+#         if v.GetCount() != 0:
+#             DrawDoll(ax, v.GetImgPath(), v.GetPosition(), len(dollList.menuDict))
+#
+# # 클로 그리기 함수
+# def DrawClaw(ax: Axes, claw: Claw):
+#     ax.imshow(claw.GetImgPath(), aspect='auto', extent=[claw.GetW(), claw.GetW() + claw.GetSize()[0],
+#                                                         claw.GetH(), claw.GetH() + claw.GetSize()[1]],
+#               zorder=1)
+#
+# def MoveClaw(claw: Claw,dollList: DollList,dollBox: DollBox):
+#     userSelect = input("A는 좌측, S는 뽑기, D는 우측입니다.")
+#     if userSelect.isdigit():
+#         print("잘못된 입력입니다.")
+#         return False
+#     elif userSelect.upper() == 'A':
+#         if claw.GetW() == 0:
+#             print("더 이상 좌측으로 움직일 수 없습니다.")
+#             return False
+#         else:
+#             claw.SetW(claw.GetW()-claw.GetTick())
+#             return True
+#     elif userSelect.upper() == 'S':
+#         tmpDoll = SelectDoll(dollList,claw.GetW())
+#         if isinstance(tmpDoll,Doll):
+#             tmpDoll.Sales()
+#         claw.RestW()
+#     elif userSelect.upper() == 'D':
+#         if claw.GetW() == dollBox.Xaxis:
+#             print("더 이상 우측으로 움직일 수 없습니다.")
+#         else:
+#             claw.SetW(claw.GetW()+claw.GetTick())
+#             return True
+#
+# def SelectDoll(dollList:DollList, claw_x):
+#     tmpList = []
+#     tmpDoll = Doll
+#
+#     for k , v in dollList.menuDict.items():
+#         if claw_x == v.GetPosition():
+#             tmpList.append(v)
+#
+#         if tmpList:
+#             tmpDoll = tmpList[random.randint(0, len(tmpList) - 1)]
+#         else:
+#             return False
+#
+#         if probability <= 1:
+#             return tmpDoll
+#         else:
+#             return False
+#
+#
+# def RefreshBox(dollList: DollList, dollBox: DollBox, claw: Claw):
+#     plt.close('all')  # 상태 초기화
+#     dollBox.ResetPlt()  # 새로 생성
+#
+#     # 축 범위 설정
+#     dollBox.GetAx().set_xlim(0, dollBox.GetXaxis())
+#     dollBox.GetAx().set_ylim(0, dollBox.GetYaxis())
+#
+#     # 배경 이미지 표시
+#     dollBox.GetAx().imshow(np.array(background_image), aspect='auto',
+#               extent=[0, dollBox.GetXaxis(), 0, dollBox.GetYaxis()], zorder=0)
+#
+#     # 인형 및 클로 그리기
+#     SettingDoll(dollBox.GetAx(), dollList)
+#     DrawClaw(dollBox.GetAx(), claw)
+#
+#     plt.draw()
+#     plt.pause(0.1)
+#
+#
+# # 실행
+# RefreshBox(dollList, dollBox, claw)
+# MoveClaw(claw, dollList, dollBox)
+# RefreshBox(dollList, dollBox, claw)
+# MoveClaw(claw, dollList, dollBox)
+# RefreshBox(dollList, dollBox, claw)

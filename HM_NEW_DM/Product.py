@@ -1,10 +1,8 @@
-
 class Product:
     def __init__(self, name, price, count):
         self._name = name
         self._price = price
         self._count = count
-        self._sales = 0
         self._salesCount = 0
 
     def GetName(self):
@@ -17,7 +15,7 @@ class Product:
         return self._count
 
     def GetSales(self):
-        return self._sales
+        return self._salesCount
 
     def Sales(self,count = 1):
         self._count -= count

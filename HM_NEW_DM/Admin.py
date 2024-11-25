@@ -1,17 +1,16 @@
-from HW_DM.Product import Product
-from HW_DM.ProductList import ProductList
+from HM_NEW_DM.Product import Product
+from HM_NEW_DM.ProductList import ProductList
 
 
 class Admin:
     def __init__(self,productType = "판매할 종류"):
         self.productType = productType
-        pass
 
     def SetProductType(self, productType:str):
         self.productType = productType
     def GetProductType(self):
         return self.productType
-    # 음료 판매 개수 초기화
+    # 판매할 종류 판매 개수 초기화
     def Admin_SalesReset(self, menu: ProductList):
 
         for k, v in menu.menuDict.items():
@@ -20,7 +19,7 @@ class Admin:
         menu.totalPrice = 0
         print("판매량이 초기화 되었습니다.")
 
-    # 음료 판매량 분석
+    # 판매할 종류 판매량 분석
     def Admin_AnalyzeSales(self, menu: ProductList, machineTotalSalesCount, machineTotalPrice):
         ProductTotalPrice = 0
         ProductTotalsalesCount = 0
@@ -36,10 +35,11 @@ class Admin:
             print("------------------------------------------")
             print(
                 f'총 판매 개수는 {ProductTotalsalesCount + machineTotalSalesCount:,}개 이며 금액은 {ProductTotalPrice + machineTotalPrice:,}원 입니다.')
-        print("------------------------------------------")
-        print(f'총 판매 개수는 {ProductTotalsalesCount:,}개 이며 금액은 {ProductTotalPrice:,}원 입니다.')
+        else:
+            print("------------------------------------------")
+            print(f'총 판매 개수는 {ProductTotalsalesCount:,}개 이며 금액은 {ProductTotalPrice:,}원 입니다.')
 
-    # 현재 판매중인 음료 출력, 보유하고 있는 음료 출력
+    # 현재 판매중인 판매할 종류 출력, 보유하고 있는 판매할 종류 출력
     def Admin_ShowCount(self, menu: ProductList, menuDictOrhaveDict: dict):
 
         if menuDictOrhaveDict == menu.menuDict:
@@ -47,10 +47,10 @@ class Admin:
             for i, (k, v) in enumerate(menu.menuDict.items(), 1):
                 # 판매대에 팔고있는 이름과 재고 수 출력
                 print(f'{i}. {v.GetName()}\t판매대 재고: {v.GetCount():,}개\t', end="")
-                # 등록된 음료수라면 보유 재고에서 몇개 있는지 출력
+                # 등록된 판매할 종류라면 보유 재고에서 몇개 있는지 출력
                 if k in menu.haveDict:
                     print(f'보유 재고: {menu.haveDict[k].GetCount():,}개\t', end="")
-                # 등록되지 않은 음료수라고 출력
+                # 등록되지 않은 판매할 종류 라고 출력
                 else:
                     print(f"보유 재고: 등록되지 않은 {self.productType}입니다.\t", end="")
             print()  # 한줄 띄우기
@@ -60,7 +60,7 @@ class Admin:
                 print(f'{i}. {v.GetName()} {v.GetCount():,}개\t', end="")
             print()
 
-    # 보유하지 않은 음료일 경우
+    # 보유하지 않은 판매할 종류일 경우
     def isHaveProduct(self, product: Product, haveDict: dict) -> bool:
         if product.GetName() not in haveDict.keys():
             print(f'등록된 {self.productType} 중 {product.GetName()}는 없어 {self.productType} 재고 충전을 종료합니다.')
@@ -73,7 +73,7 @@ class Admin:
         if count.isdigit():
             # 충전 개수만큼 보유재고가 있는지 확인
             if int(count) <= menu.haveDict[product.GetName()].GetCount():
-                # 만약 충전 개수만큼 보유재고가 있다면 그만큼 해당 음료수에 재고 수를 추가함.
+                # 만약 충전 개수만큼 보유재고가 있다면 그만큼 해당 판매할 종류에 재고 수를 추가함.
                 menu.menuDict[product.GetName()].InsertCount(int(count))
                 # 추가한 재고 수 만큼 보유재고는 그만큼 차감함.
                 menu.haveDict[product.GetName()].ExtractCount(int(count))
@@ -96,7 +96,7 @@ class Admin:
         if userSelect == "1" or userSelect == f"{self.productType}판매대재고채우기" or userSelect == "채우기":
             # 현재 판매대의 재고현황과 보충할수있는 재고 물량 표시
             self.Admin_ShowCount(menu, menu.menuDict)
-            # 1. 콜라 판매대 재고: N개 보유 재고 :N개... 출력한 뒤 무슨 음료수의 재고를 넣을 것인지 입력받음
+            # 1. 콜라 판매대 재고: N개 보유 재고 :N개... 출력한 뒤 무슨 판매할 종류의 재고를 넣을 것인지 입력받음
             name = input(f"재고를 채워 넣을 {self.productType} 이름을 기입하시오.")
 
             # 만약 입력 받은것이 양수로 입력 받았다면
@@ -106,13 +106,13 @@ class Admin:
                 # 입력값을 숫자로 형변환 하고 리스트의 길이보다 같거나 작게 바꿈
                 # 1. 2. 3. 4. 이렇게 출력 할거라 4개라서 5해도 안되고 0해도 isdigit에 걸림
                 if int(name) <= len(tmpList):
-                    # 리스트를 통해서 어떤 음료수인지 특정한 다음 이름(key)을 가져와서 판매대의 무슨 음료인지 가져옴
+                    # 리스트를 통해서 어떤 판매할 종류인지 특정한 다음 이름(key)을 가져와서 판매대의 무슨 판매할 종류인지 가져옴
                     tmpProduct = menu.menuDict[tmpList[int(name) - 1][0]]
                     if not self.isHaveProduct(tmpProduct, menu.haveDict):
                         return
-                    # 음료수의 이름, 재고 수를 출력하여 몇개 넣을것인지 입력받음
+                    # 판매할 종류의 이름, 재고 수를 출력하여 몇개 넣을것인지 입력받음
                     print(f'{tmpProduct.GetName()}를 몇개 채워넣겠습니까?\n현재({tmpProduct.GetCount():,}개)', end="")
-                    # 판매대에는 있고 등록되지 않은 음료수일수도 있음.
+                    # 판매대에는 있고 등록되지 않은 판매할 종류일수도 있음.
                     if tmpProduct.GetName() in menu.haveDict:
                         count = input(f', 보유({menu.haveDict[tmpProduct.GetName()].GetCount():,}): ')
                     else:
@@ -126,10 +126,10 @@ class Admin:
             # 입력받은 값이 key값이라면
             elif name in menu.menuDict.keys():
 
-                # 입력받은 음료수 지정
+                # 입력받은 판매할 종류 지정
                 tmpProduct = menu.menuDict[name]
 
-                # 해당 음료가 등록되지 않은 음료수라면 종료
+                # 해당 판매할 종류가 등록되지 않은 판매할 종류라면 종료
                 if not self.isHaveProduct(tmpProduct, menu.haveDict):
                     return
 
@@ -147,7 +147,7 @@ class Admin:
                 print(f'판매대에 {name}는 없습니다.')
                 print(f"{self.productType} 재고 충전을 종료합니다.")
 
-        # 보유 재고의 음료를 발주한다면
+        # 보유 재고의 판매할 종류를 발주한다면
         elif userSelect == "2" or userSelect == f"{self.productType}발주하기" or userSelect == "발주":
             self.Admin_ShowCount(menu, menu.haveDict)
             name = input(f"발주할 {self.productType} 이름을 기입하시오.")
@@ -157,7 +157,7 @@ class Admin:
                 tmpList = list(menu.haveDict.items())
                 # 리스트의 갯수보다 입력한 순번이 작은지 확인
                 if int(name) <= len(tmpList):
-                    # 음료수 특정
+                    # 판매할 종류 특정
                     tmpProduct = menu.haveDict[tmpList[int(name) - 1][0]]
                     count = input(f'{tmpProduct.GetName()}를 몇개 발주하시겠습니까?\n현재({tmpProduct.GetCount():,}개): ')
                     # 입력값이 양수라면 그만큼 충전함
@@ -169,7 +169,7 @@ class Admin:
 
             # 입력을 이름(key)값으로 했다면
             elif name in menu.haveDict.keys():
-                # 음료수 특정
+                # 판매할 종류 특정
                 tmpProduct = menu.haveDict[name]
                 count = input(f'{tmpProduct.GetName()}를 몇개 발주하시겠습니까?\n현재({tmpProduct.GetCount():,}개): ')
                 if count.isdigit():
@@ -191,13 +191,13 @@ class Admin:
             return
         price = input(f'{name}의 가격을 입력하시오.')
         if not price.isdigit():
-            print("숫자 또는 양수의 값이 입력 되지 않아 음료 등록을 종료합니다.")
+            print(f"숫자 또는 양수의 값이 입력 되지 않아 {self.productType} 등록을 종료합니다.")
             return
         else:
             price = int(price)
         count = input(f'{name}의 재고량을 입력하시오.')
         if not count.isdigit():
-            print("숫자 또는 양수의 값이 입력 되지 않아 음료 등록을 종료합니다.")
+            print(f"숫자 또는 양수의 값이 입력 되지 않아 {self.productType} 등록을 종료합니다.")
         else:
             count = int(count)
 

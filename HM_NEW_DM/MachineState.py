@@ -1,9 +1,9 @@
 import sys
 
-from HW_DM.Admin import Admin
-from HW_DM.ProductList import ProductList
-from HW_DM.Machine import Machine
-from HW_DM.Product import Product
+from HM_NEW_DM.Admin import Admin
+from HM_NEW_DM.ProductList import ProductList
+from HM_NEW_DM.Machine import Machine
+from HM_NEW_DM.Product import Product
 
 
 class MachineState:

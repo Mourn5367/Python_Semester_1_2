@@ -1,6 +1,6 @@
-from HW_DM.Admin import Admin
-from HW_DM.ProductList import ProductList
-from HW_DM.Product import Product
+from HM_NEW_DM.Admin import Admin
+from HM_NEW_DM.ProductList import ProductList
+from HM_NEW_DM.Product import Product
 
 class Machine:
     def __init__(self):
@@ -125,3 +125,4 @@ class Machine:
         else:
             print("잘못된 입력입니다.")
             return False
+

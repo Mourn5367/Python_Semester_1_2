@@ -1,4 +1,4 @@
-from HW_DM.Product import Product
+from HM_NEW_DM.Product import Product
 
 
 class Doll(Product):
