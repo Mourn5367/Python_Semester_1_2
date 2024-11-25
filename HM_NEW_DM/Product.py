@@ -23,3 +23,15 @@ class Product:
 
     def ResetSales(self):
         self._salesCount = 0
+
+    def ChangePrice(self, price):
+        self._price = price
+
+    def ChangeCount(self, count):
+        self._count = count
+
+    def InsertCount(self, count):
+        self._count += count
+
+    def ExtractCount(self, count = 1):
+        self._count -= count

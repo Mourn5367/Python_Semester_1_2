@@ -9,13 +9,13 @@ from HM_NEW_DM.DollMachine import DollMachine
 from HM_NEW_DM.DollMachineState import DollMachinState
 
 if __name__ == '__main__':
-    # 메뉴 객체 생성
+    # 인형 객체 생성
     dollList = DollList()
-    # 자판기 객체 생성
+    # 인형 자판기 객체 생성
     dollMachine =  DollMachine()
-    # 관리자 객체 생성
+    # 인형 관리자 객체 생성
     dollAdmin = DollAdmin()
-    # 기계 상태 객체 생성
+    # 인형 기계 상태 객체 생성
     dollMachineState = DollMachinState()
 
     while True:

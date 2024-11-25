@@ -7,12 +7,6 @@ class Doll(Product):
         self.__position = position
         self.__imgPath = imgPath
 
-    def InsertCount(self, count):
-        self._count += count
-
-    def ExtractCount(self, count = 1):
-        self._count -= count
-
     def GetPosition(self):
         return self.__position
 
@@ -25,3 +19,5 @@ class Doll(Product):
     @staticmethod
     def GetSize():
         return 2
+
+
